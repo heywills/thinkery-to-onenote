@@ -50,11 +50,62 @@ param(
     [string]$NotebookName = "Thinkery Tiriansdoor Import",
     [string]$ImportMapPath = ".\\sample-import-maps\\heywills-import-map.json",
     [int]$TinyNoteThreshold = 140,
+    [string]$LogPath = ".\\logs",
     [switch]$DryRun = $false
 )
 
 $ErrorActionPreference = "Break"
 $graphApi = "https://graph.microsoft.com/v1.0"
+
+# Setup logging
+$timestamp = Get-Date -Format "yyyy-MM-dd_HH-mm-ss"
+$logFileName = "thinkery-import_$timestamp.log"
+
+# Ensure log directory exists
+if (-not (Test-Path $LogPath)) {
+    try {
+        New-Item -Path $LogPath -ItemType Directory -Force | Out-Null
+        Write-Host "Created log directory: $LogPath"
+    }
+    catch {
+        Write-Warning "Could not create log directory: $LogPath. Logging to current directory instead."
+        $LogPath = "."
+    }
+}
+
+$logFile = Join-Path -Path $LogPath -ChildPath $logFileName
+
+# Log function to write to both console and log file
+Function Write-Log {
+    param (
+        [string]$Message,
+        [ValidateSet("INFO", "WARNING", "ERROR", "SUCCESS")]
+        [string]$Level = "INFO"
+    )
+    
+    $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+    $logMessage = "[$timestamp] [$Level] $Message"
+    
+    # Write to log file
+    Add-Content -Path $logFile -Value $logMessage
+    
+    # Also write to console with color based on level
+    switch ($Level) {
+        "WARNING" { Write-Host $logMessage -ForegroundColor Yellow }
+        "ERROR"   { Write-Host $logMessage -ForegroundColor Red }
+        "SUCCESS" { Write-Host $logMessage -ForegroundColor Green }
+        default   { Write-Host $logMessage }
+    }
+}
+
+Write-Log "Starting Thinkery to OneNote import process" "INFO"
+Write-Log "Log file: $logFile" "INFO"
+Write-Log "Parameters:" "INFO"
+Write-Log "  JsonPath: $JsonPath" "INFO"
+Write-Log "  NotebookName: $NotebookName" "INFO"
+Write-Log "  ImportMapPath: $ImportMapPath" "INFO"
+Write-Log "  TinyNoteThreshold: $TinyNoteThreshold" "INFO"
+Write-Log "  DryRun: $DryRun" "INFO"
 
 Function Invoke-GraphPost($Uri, $BodyObj) {
     $json = $BodyObj | ConvertTo-Json -Depth 6
@@ -63,17 +114,18 @@ Function Invoke-GraphPost($Uri, $BodyObj) {
         Write-Debug "Sending request to $Uri with body: $json"
         
         if ($DryRun) {
-            Write-Host "[DRY RUN] Would send request to $Uri" -ForegroundColor Yellow
+            Write-Log "[DRY RUN] Would send request to $Uri" "INFO"
             return [PSCustomObject]@{ id = "dry-run-id-$(Get-Random)" }
         }
         
+        Write-Log "Sending request to $Uri" "INFO"
         $response = Invoke-RestMethod -Method Post -Uri $Uri `
             -Headers @{ Authorization = "Bearer $AccessToken"; "Content-Type" = "application/json" } `
             -Body $json -ErrorVariable responseError
         return $response
     } catch {
-        Write-Error "Graph API Error: $_"
-        Write-Error "Request body: $json"
+        Write-Log "Graph API Error: $_" "ERROR"
+        Write-Log "Request body: $json" "ERROR"
         throw $_
     }
 }
@@ -92,7 +144,7 @@ Function Sanitize-Name {
 Function Create-Notebook {
     param([string]$Name)
     $sanitizedName = Sanitize-Name -Name $Name
-    Write-Host "Creating notebook '$Name' (sanitized as '$sanitizedName')..."
+    Write-Log "Creating notebook '$Name' (sanitized as '$sanitizedName')..." "INFO"
     $nb = Invoke-GraphPost "$graphApi/me/onenote/notebooks" @{ displayName = $sanitizedName }
     return $nb.id
 }
@@ -100,7 +152,7 @@ Function Create-Notebook {
 Function Create-SectionGroup {
     param([string]$NotebookId, [string]$Name)
     $sanitizedName = Sanitize-Name -Name $Name
-    Write-Host "Creating section group '$Name' (sanitized as '$sanitizedName')..."
+    Write-Log "Creating section group '$Name' (sanitized as '$sanitizedName')..." "INFO"
     $sg = Invoke-GraphPost "$graphApi/me/onenote/notebooks/$NotebookId/sectionGroups" @{ displayName = $sanitizedName }
     return $sg.id
 }
@@ -108,7 +160,7 @@ Function Create-SectionGroup {
 Function Create-Section {
     param([string]$SectionGroupId, [string]$Name)
     $sanitizedName = Sanitize-Name -Name $Name
-    Write-Host "Creating section '$Name' (sanitized as '$sanitizedName')..."
+    Write-Log "Creating section '$Name' (sanitized as '$sanitizedName')..." "INFO"
     $sec = Invoke-GraphPost "$graphApi/me/onenote/sectionGroups/$SectionGroupId/sections" @{ displayName = $sanitizedName }
     return $sec.id
 }
@@ -117,11 +169,12 @@ Function Post-Page {
     param([string]$SectionId, [string]$Html)
     try {
         if ($DryRun) {
-            Write-Host "[DRY RUN] Would post page to section $SectionId" -ForegroundColor Yellow
+            Write-Log "[DRY RUN] Would post page to section $SectionId" "INFO"
             return
         }
         
         # Send the HTML content directly in the request body
+        Write-Log "Posting page to section $SectionId" "INFO"
         $ret = Invoke-RestMethod -Method Post -Uri "$graphApi/me/onenote/sections/$SectionId/pages" `
             -Headers @{ 
                 "Authorization" = "Bearer $AccessToken"
@@ -130,7 +183,7 @@ Function Post-Page {
             -Body $Html
     }
     catch {
-        Write-Error "Error posting page: $_"
+        Write-Log "Error posting page: $_" "ERROR"
         Break
     }
 }
@@ -199,18 +252,19 @@ $DEFAULT_SECTION_NAME = "Uncategorized imported items"
 
 # 1. Notebook
 if ($DryRun) {
-    Write-Host "[DRY RUN] Would create notebook '$NotebookName'" -ForegroundColor Yellow
+    Write-Log "[DRY RUN] Would create notebook '$NotebookName'" "INFO"
     $notebookId = "dry-run-notebook-id"
 } else {
     $notebookId = Create-Notebook -Name $NotebookName
 }
-Write-Host "Notebook created with id $notebookId"
+Write-Log "Notebook created with id $notebookId" "SUCCESS"
 
 # 2. Load and validate import map
 try {
-    Write-Host "Loading import map from $ImportMapPath..."
+    Write-Log "Loading import map from $ImportMapPath..." "INFO"
     
     if (-not (Test-Path $ImportMapPath)) {
+        Write-Log "Import map file not found: $ImportMapPath" "ERROR"
         throw "Import map file not found: $ImportMapPath"
     }
     
@@ -245,10 +299,10 @@ try {
         )
     }
     
-    Write-Host "Import map loaded successfully with $($notebookStructure.Count) section groups."
+    Write-Log "Import map loaded successfully with $($notebookStructure.Count) section groups." "SUCCESS"
 }
 catch {
-    Write-Error "Error loading or validating import map: $_"
+    Write-Log "Error loading or validating import map: $_" "ERROR"
     exit 1
 }
 
@@ -332,11 +386,17 @@ Function Find-BestMatchSection($Tags) {
     return @{ Group = $bestMatchGroup; Section = $bestMatchSection }
 }
 
-Write-Host "`nImporting pages..."
+Write-Log "`nImporting pages..." "INFO"
 
 $agg = @{}   # sectionId|title|tags => [html fragments]
 
 $json = Get-Content $JsonPath -Raw | ConvertFrom-Json
+$totalNotes = $json.Length
+Write-Log "Found $totalNotes notes to import" "INFO"
+
+$largeNoteCount = 0
+$smallNoteCount = 0
+
 foreach ($n in $json) {
     $tags = ($n.tags -split "\s+") | Where-Object { $_ }
     
@@ -389,7 +449,8 @@ foreach ($n in $json) {
         
         # Log the small note being aggregated
         $tagsString = if ($tags.Count -gt 0) { "'$($tags -join "', '")'" } else { "(no tags)" }
-        Write-Host "  + Small note: '$title' → Aggregating to '$pageTitle' (in $groupName/$sectionName) [Tags: $tagsString]"
+        Write-Log "  + Small note: '$title' → Aggregating to '$pageTitle' (in $groupName/$sectionName) [Tags: $tagsString]" "INFO"
+        $smallNoteCount++
     } else {
         $html = @"
 <!DOCTYPE html>
@@ -407,9 +468,12 @@ $content
         
         # Enhanced logging with full details
         $tagsString = if ($tags.Count -gt 0) { "'$($tags -join "', '")'" } else { "(no tags)" }
-        Write-Host "  + Large page: '$title' → $groupName/$sectionName [Tags: $tagsString]"
+        Write-Log "  + Large page: '$title' → $groupName/$sectionName [Tags: $tagsString]" "INFO"
+        $largeNoteCount++
     }
 }
+
+$aggregatedPageCount = $agg.Keys.Count
 
 # Create the aggregated pages
 foreach ($k in $agg.Keys) {
@@ -433,7 +497,12 @@ $body
     
     # Enhanced logging for aggregated pages
     $count = ($agg[$k].fragments.Count)
-    Write-Host "  + Aggregated page: '$pageTitle' with $count notes"
+    Write-Log "  + Aggregated page: '$pageTitle' with $count notes" "SUCCESS"
 }
 
-Write-Host "`nImport complete!"
+Write-Log "`nImport summary:" "SUCCESS"
+Write-Log "  Total notes processed: $totalNotes" "SUCCESS" 
+Write-Log "  Large notes (individual pages): $largeNoteCount" "SUCCESS"
+Write-Log "  Small notes (aggregated): $smallNoteCount" "SUCCESS"
+Write-Log "  Aggregated pages created: $aggregatedPageCount" "SUCCESS"
+Write-Log "`nImport complete!" "SUCCESS"
