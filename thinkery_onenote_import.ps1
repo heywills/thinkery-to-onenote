@@ -334,7 +334,7 @@ Function Find-BestMatchSection($Tags) {
 
 Write-Host "`nImporting pages..."
 
-$agg = @{}   # sectionId|title => [html fragments]
+$agg = @{}   # sectionId|title|tags => [html fragments]
 
 $json = Get-Content $JsonPath -Raw | ConvertFrom-Json
 foreach ($n in $json) {
@@ -360,10 +360,32 @@ foreach ($n in $json) {
     $noteLen = $content.Length
 
     if ($noteLen -lt $TinyNoteThreshold) {
-        $pageTitle = "Quick Notes - $sectionName"
-        $key = "$secId|$pageTitle"
-        if (!$agg.ContainsKey($key)) { $agg[$key] = @() }
-        $agg[$key] += "<h3>$title</h3><p>$content</p>"
+        # Sort tags alphabetically for consistent grouping
+        $sortedTags = $tags | Sort-Object
+        
+        # Create tag string for the page title
+        $tagString = if ($sortedTags.Count -gt 0) { 
+            $sortedTags -join ", " 
+        } else { 
+            "untagged" 
+        }
+        
+        # Create a descriptive page title including section name and tags
+        $pageTitle = "Small notes - $sectionName - $tagString"
+        
+        # Create a key that includes section ID and tag string
+        $key = "$secId|$tagString"
+        
+        # Initialize array if this is a new key
+        if (!$agg.ContainsKey($key)) { 
+            $agg[$key] = @{
+                "title" = $pageTitle
+                "fragments" = @()
+            }
+        }
+        
+        # Add this note to the appropriate aggregation group
+        $agg[$key].fragments += "<h3>$title</h3><p>$content</p>"
         
         # Log the small note being aggregated
         $tagsString = if ($tags.Count -gt 0) { "'$($tags -join "', '")'" } else { "(no tags)" }
@@ -389,11 +411,12 @@ $content
     }
 }
 
+# Create the aggregated pages
 foreach ($k in $agg.Keys) {
     $parts = $k -split '\|'
     $secId = $parts[0]
-    $pageTitle = $parts[1]
-    $body = ($agg[$k] -join "`n")
+    $pageTitle = $agg[$k].title
+    $body = ($agg[$k].fragments -join "`n")
     $html = @"
 <!DOCTYPE html>
 <html>
@@ -409,7 +432,7 @@ $body
     Post-Page -SectionId $secId -Html $html
     
     # Enhanced logging for aggregated pages
-    $count = ($agg[$k] -split "<h3>").Count - 1
+    $count = ($agg[$k].fragments.Count)
     Write-Host "  + Aggregated page: '$pageTitle' with $count notes"
 }
 
