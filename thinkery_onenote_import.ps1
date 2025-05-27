@@ -25,7 +25,7 @@
 
 .PARAMETER TinyNoteThreshold
     Character count threshold below which notes are considered "tiny" and will be aggregated.
-    Default: 200
+    Default: 140
 
 .PARAMETER DryRun
     If specified, the script will not make any changes, only report what it would do.
@@ -49,7 +49,7 @@ param(
     [string]$JsonPath = ".\\import-files\\thinkery-tiriansdoor.json",
     [string]$NotebookName = "Thinkery Tiriansdoor Import",
     [string]$ImportMapPath = ".\\sample-import-maps\\heywills-import-map.json",
-    [int]$TinyNoteThreshold = 200,
+    [int]$TinyNoteThreshold = 140,
     [switch]$DryRun = $false
 )
 
