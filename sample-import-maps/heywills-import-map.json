@@ -1,0 +1,170 @@
+[
+  {
+    "OneNoteSectionGroupName": "Bible",
+    "OneNoteSections": [
+      {
+        "OneNoteSectionName": "Memory Verses",
+        "ThinkeryTags": ["memory_verse"]
+      },
+      {
+        "OneNoteSectionName": "Study Notes",
+        "ThinkeryTags": []
+      }
+    ]
+  },
+  {
+    "OneNoteSectionGroupName": "Homeschool",
+    "OneNoteSections": [
+      {
+        "OneNoteSectionName": "Task Lists",
+        "ThinkeryTags": ["todo"]
+      },
+      {
+        "OneNoteSectionName": "Courses & Resources",
+        "ThinkeryTags": []
+      }
+    ]
+  },
+  {
+    "OneNoteSectionGroupName": "Gift Ideas",
+    "OneNoteSections": [
+      {
+        "OneNoteSectionName": "Amy",
+        "ThinkeryTags": ["amy"]
+      },
+      {
+        "OneNoteSectionName": "Jessica",
+        "ThinkeryTags": ["jessica"]
+      },
+      {
+        "OneNoteSectionName": "Joseph",
+        "ThinkeryTags": ["joseph"]
+      },
+      {
+        "OneNoteSectionName": "General",
+        "ThinkeryTags": []
+      }
+    ]
+  },
+  {
+    "OneNoteSectionGroupName": "Wish Lists",
+    "OneNoteSections": [
+      {
+        "OneNoteSectionName": "Mike",
+        "ThinkeryTags": ["mike", "me"]
+      }
+    ]
+  },
+  {
+    "OneNoteSectionGroupName": "Health",
+    "OneNoteSections": [
+      {
+        "OneNoteSectionName": "Family Health",
+        "ThinkeryTags": ["family"]
+      },
+      {
+        "OneNoteSectionName": "Personal Trackers",
+        "ThinkeryTags": []
+      }
+    ]
+  },
+  {
+    "OneNoteSectionGroupName": "Home",
+    "OneNoteSections": [
+      {
+        "OneNoteSectionName": "Maintenance Log",
+        "ThinkeryTags": ["maintenance", "repair"]
+      },
+      {
+        "OneNoteSectionName": "Contractors & Quotes",
+        "ThinkeryTags": ["contractor", "quote"]
+      }
+    ]
+  },
+  {
+    "OneNoteSectionGroupName": "Outdoor & Gear",
+    "OneNoteSections": [
+      {
+        "OneNoteSectionName": "Gear Lists",
+        "ThinkeryTags": []
+      },
+      {
+        "OneNoteSectionName": "Trip Planning",
+        "ThinkeryTags": ["trip"]
+      }
+    ]
+  },
+  {
+    "OneNoteSectionGroupName": "Pets",
+    "OneNoteSections": [
+      {
+        "OneNoteSectionName": "Health History",
+        "ThinkeryTags": ["health", "vet"]
+      },
+      {
+        "OneNoteSectionName": "Food & Supplies",
+        "ThinkeryTags": ["food", "supplies"]
+      }
+    ]
+  },
+  {
+    "OneNoteSectionGroupName": "Hunting & Shooting",
+    "OneNoteSections": [
+      {
+        "OneNoteSectionName": "Turkey Tips",
+        "ThinkeryTags": ["turkey", "turkey_tips"]
+      },
+      {
+        "OneNoteSectionName": "Deer & Elk",
+        "ThinkeryTags": ["deer", "elk"]
+      },
+      {
+        "OneNoteSectionName": "Equipment",
+        "ThinkeryTags": []
+      }
+    ]
+  },
+  {
+    "OneNoteSectionGroupName": "Misc Notes",
+    "OneNoteSections": [
+      {
+        "OneNoteSectionName": "Tech Snippets",
+        "ThinkeryTags": ["tech", "tech_tip", "tips"]
+      },
+      {
+        "OneNoteSectionName": "Quotes",
+        "ThinkeryTags": ["quotes"]
+      },
+      {
+        "OneNoteSectionName": "Inbox",
+        "ThinkeryTags": []
+      }
+    ]
+  },
+  {
+    "OneNoteSectionGroupName": "Book Trackers",
+    "OneNoteSections": [
+      {
+        "OneNoteSectionName": "Series",
+        "ThinkeryTags": []
+      }
+    ]
+  },
+  {
+    "OneNoteSectionGroupName": "Blog / Writing Ideas",
+    "OneNoteSections": [
+      {
+        "OneNoteSectionName": "CMS Ideas",
+        "ThinkeryTags": ["cms", "kentico", "sitefinity"]
+      },
+      {
+        "OneNoteSectionName": "App Ideas",
+        "ThinkeryTags": ["app", "utility"]
+      },
+      {
+        "OneNoteSectionName": "Other Drafts",
+        "ThinkeryTags": []
+      }
+    ]
+  }
+]

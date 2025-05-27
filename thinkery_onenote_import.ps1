@@ -40,6 +40,7 @@ param(
     [Parameter(Mandatory = $true)][string]$AccessToken,
     [string]$JsonPath = ".\\import-files\\thinkery-tiriansdoor.json",
     [string]$NotebookName = "Thinkery Tiriansdoor Import",
+    [string]$ImportMapPath = ".\\sample-import-maps\\heywills-import-map.json",
     [switch]$DryRun = $false
 )
 
@@ -125,6 +126,64 @@ Function Post-Page {
     }
 }
 
+# Function to validate the import map structure
+Function Validate-ImportMap($importMap) {
+    if ($null -eq $importMap) {
+        throw "Import map is null or could not be loaded."
+    }
+
+    if ($importMap -isnot [array]) {
+        throw "Import map must be an array."
+    }
+
+    foreach ($group in $importMap) {
+        # Validate group has required properties
+        if (-not $group.ContainsKey('OneNoteSectionGroupName')) {
+            throw "Each group in the import map must have a OneNoteSectionGroupName property."
+        }
+
+        if ($group.OneNoteSectionGroupName -isnot [string]) {
+            throw "OneNoteSectionGroupName must be a string."
+        }
+
+        if (-not $group.ContainsKey('OneNoteSections')) {
+            throw "Each group in the import map must have a OneNoteSections property."
+        }
+
+        if ($group.OneNoteSections -isnot [array]) {
+            throw "OneNoteSections must be an array."
+        }
+
+        # Validate each section has required properties
+        foreach ($section in $group.OneNoteSections) {
+            if (-not $section.ContainsKey('OneNoteSectionName')) {
+                throw "Each section must have a OneNoteSectionName property."
+            }
+
+            if ($section.OneNoteSectionName -isnot [string]) {
+                throw "OneNoteSectionName must be a string."
+            }
+
+            if (-not $section.ContainsKey('ThinkeryTags')) {
+                throw "Each section must have a ThinkeryTags property."
+            }
+
+            if ($section.ThinkeryTags -isnot [array]) {
+                throw "ThinkeryTags must be an array."
+            }
+
+            # Ensure all tags are strings
+            foreach ($tag in $section.ThinkeryTags) {
+                if ($tag -isnot [string]) {
+                    throw "Each tag in ThinkeryTags must be a string."
+                }
+            }
+        }
+    }
+
+    return $true
+}
+
 # 1. Notebook
 if ($DryRun) {
     Write-Host "[DRY RUN] Would create notebook '$NotebookName'" -ForegroundColor Yellow
@@ -134,216 +193,38 @@ if ($DryRun) {
 }
 Write-Host "Notebook created with id $notebookId"
 
-# 2. Section Groups & Sections
-$notebookStructure = @(
-    @{
-        OneNoteSectionGroupName = "Bible"
-        OneNoteSectionGroupId = $null
-        OneNoteSections = @(
-            @{
-                OneNoteSectionName = "Memory Verses"
-                OneNoteSectionId = $null
-                ThinkeryTags = @("memory_verse")
-            },
-            @{
-                OneNoteSectionName = "Study Notes"
-                OneNoteSectionId = $null
-                ThinkeryTags = @()  # Default for Bible group
-            }
-        )
-    },
-    @{
-        OneNoteSectionGroupName = "Homeschool"
-        OneNoteSectionGroupId = $null
-        OneNoteSections = @(
-            @{
-                OneNoteSectionName = "Task Lists"
-                OneNoteSectionId = $null
-                ThinkeryTags = @("todo")
-            },
-            @{
-                OneNoteSectionName = "Courses & Resources"
-                OneNoteSectionId = $null
-                ThinkeryTags = @()  # Default for Homeschool group
-            }
-        )
-    },
-    @{
-        OneNoteSectionGroupName = "Gift Ideas"
-        OneNoteSectionGroupId = $null
-        OneNoteSections = @(
-            @{
-                OneNoteSectionName = "Amy"
-                OneNoteSectionId = $null
-                ThinkeryTags = @("amy")
-            },
-            @{
-                OneNoteSectionName = "Jessica"
-                OneNoteSectionId = $null
-                ThinkeryTags = @("jessica")
-            },
-            @{
-                OneNoteSectionName = "Joseph"
-                OneNoteSectionId = $null
-                ThinkeryTags = @("joseph")
-            },
-            @{
-                OneNoteSectionName = "General"
-                OneNoteSectionId = $null
-                ThinkeryTags = @()  # Default for Gift Ideas group
-            }
-        )
-    },
-    @{
-        OneNoteSectionGroupName = "Wish Lists"
-        OneNoteSectionGroupId = $null
-        OneNoteSections = @(
-            @{
-                OneNoteSectionName = "Mike"
-                OneNoteSectionId = $null
-                ThinkeryTags = @("mike", "me")
-            }
-        )
-    },
-    @{
-        OneNoteSectionGroupName = "Health"
-        OneNoteSectionGroupId = $null
-        OneNoteSections = @(
-            @{
-                OneNoteSectionName = "Family Health"
-                OneNoteSectionId = $null
-                ThinkeryTags = @("family")
-            },
-            @{
-                OneNoteSectionName = "Personal Trackers"
-                OneNoteSectionId = $null
-                ThinkeryTags = @()  # Default for Health group
-            }
-        )
-    },
-    @{
-        OneNoteSectionGroupName = "Home"
-        OneNoteSectionGroupId = $null
-        OneNoteSections = @(
-            @{
-                OneNoteSectionName = "Maintenance Log"
-                OneNoteSectionId = $null
-                ThinkeryTags = @("maintenance", "repair")
-            },
-            @{
-                OneNoteSectionName = "Contractors & Quotes"
-                OneNoteSectionId = $null
-                ThinkeryTags = @("contractor", "quote")
-            }
-        )
-    },
-    @{
-        OneNoteSectionGroupName = "Outdoor & Gear"
-        OneNoteSectionGroupId = $null
-        OneNoteSections = @(
-            @{
-                OneNoteSectionName = "Gear Lists"
-                OneNoteSectionId = $null
-                ThinkeryTags = @()  # Default for Outdoor & Gear group
-            },
-            @{
-                OneNoteSectionName = "Trip Planning"
-                OneNoteSectionId = $null
-                ThinkeryTags = @("trip")
-            }
-        )
-    },
-    @{
-        OneNoteSectionGroupName = "Pets"
-        OneNoteSectionGroupId = $null
-        OneNoteSections = @(
-            @{
-                OneNoteSectionName = "Health History"
-                OneNoteSectionId = $null
-                ThinkeryTags = @("health", "vet")
-            },
-            @{
-                OneNoteSectionName = "Food & Supplies"
-                OneNoteSectionId = $null
-                ThinkeryTags = @("food", "supplies")
-            }
-        )
-    },
-    @{
-        OneNoteSectionGroupName = "Hunting & Shooting"
-        OneNoteSectionGroupId = $null
-        OneNoteSections = @(
-            @{
-                OneNoteSectionName = "Turkey Tips"
-                OneNoteSectionId = $null
-                ThinkeryTags = @("turkey", "turkey_tips")
-            },
-            @{
-                OneNoteSectionName = "Deer & Elk"
-                OneNoteSectionId = $null
-                ThinkeryTags = @("deer", "elk")
-            },
-            @{
-                OneNoteSectionName = "Equipment"
-                OneNoteSectionId = $null
-                ThinkeryTags = @()  # Default for Hunting & Shooting group
-            }
-        )
-    },
-    @{
-        OneNoteSectionGroupName = "Misc Notes"
-        OneNoteSectionGroupId = $null
-        OneNoteSections = @(
-            @{
-                OneNoteSectionName = "Tech Snippets"
-                OneNoteSectionId = $null
-                ThinkeryTags = @("tech", "tech_tip", "tips")
-            },
-            @{
-                OneNoteSectionName = "Quotes"
-                OneNoteSectionId = $null
-                ThinkeryTags = @("quotes")
-            },
-            @{
-                OneNoteSectionName = "Inbox"
-                OneNoteSectionId = $null
-                ThinkeryTags = @()  # Default for Misc Notes group
-            }
-        )
-    },
-    @{
-        OneNoteSectionGroupName = "Book Trackers"
-        OneNoteSectionGroupId = $null
-        OneNoteSections = @(
-            @{
-                OneNoteSectionName = "Series"
-                OneNoteSectionId = $null
-                ThinkeryTags = @()  # Default for Book Trackers group
-            }
-        )
-    },
-    @{
-        OneNoteSectionGroupName = "Blog / Writing Ideas"
-        OneNoteSectionGroupId = $null
-        OneNoteSections = @(
-            @{
-                OneNoteSectionName = "CMS Ideas"
-                OneNoteSectionId = $null
-                ThinkeryTags = @("cms", "kentico", "sitefinity")
-            },
-            @{
-                OneNoteSectionName = "App Ideas"
-                OneNoteSectionId = $null
-                ThinkeryTags = @("app", "utility")
-            },
-            @{
-                OneNoteSectionName = "Other Drafts"
-                OneNoteSectionId = $null
-                ThinkeryTags = @()  # Default for Blog / Writing Ideas group
-            }
-        )
+# 2. Load and validate import map
+try {
+    Write-Host "Loading import map from $ImportMapPath..."
+    
+    if (-not (Test-Path $ImportMapPath)) {
+        throw "Import map file not found: $ImportMapPath"
     }
-)
+    
+    $importMap = Get-Content $ImportMapPath -Raw | ConvertFrom-Json -AsHashtable
+    Validate-ImportMap $importMap
+    
+    # Convert the import map to our structure, adding ID properties
+    $notebookStructure = $importMap | ForEach-Object {
+        @{
+            OneNoteSectionGroupName = $_.OneNoteSectionGroupName
+            OneNoteSectionGroupId = $null
+            OneNoteSections = $_.OneNoteSections | ForEach-Object {
+                @{
+                    OneNoteSectionName = $_.OneNoteSectionName
+                    OneNoteSectionId = $null
+                    ThinkeryTags = $_.ThinkeryTags
+                }
+            }
+        }
+    }
+    
+    Write-Host "Import map loaded successfully with ${$notebookStructure.Count} section groups."
+}
+catch {
+    Write-Error "Error loading or validating import map: $_"
+    exit 1
+}
 
 # Create section groups and sections based on our structure
 foreach ($group in $notebookStructure) {
