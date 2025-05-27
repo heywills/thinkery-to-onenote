@@ -19,6 +19,14 @@
 .PARAMETER NotebookName
     Display name for the new notebook.  Default: "Thinkery Import"
 
+.PARAMETER ImportMapPath
+    Path to the JSON file defining OneNote structure and tag mappings.
+    Default: "./sample-import-maps/heywills-import-map.json"
+
+.PARAMETER TinyNoteThreshold
+    Character count threshold below which notes are considered "tiny" and will be aggregated.
+    Default: 200
+
 .PARAMETER DryRun
     If specified, the script will not make any changes, only report what it would do.
 
@@ -41,6 +49,7 @@ param(
     [string]$JsonPath = ".\\import-files\\thinkery-tiriansdoor.json",
     [string]$NotebookName = "Thinkery Tiriansdoor Import",
     [string]$ImportMapPath = ".\\sample-import-maps\\heywills-import-map.json",
+    [int]$TinyNoteThreshold = 200,
     [switch]$DryRun = $false
 )
 
@@ -325,7 +334,6 @@ Function Find-BestMatchSection($Tags) {
 
 Write-Host "`nImporting pages..."
 
-$tinyThreshold = 300
 $agg = @{}   # sectionId|title => [html fragments]
 
 $json = Get-Content $JsonPath -Raw | ConvertFrom-Json
@@ -351,11 +359,15 @@ foreach ($n in $json) {
     $content = $n.html
     $noteLen = $content.Length
 
-    if ($noteLen -lt $tinyThreshold) {
+    if ($noteLen -lt $TinyNoteThreshold) {
         $pageTitle = "Quick Notes - $sectionName"
         $key = "$secId|$pageTitle"
         if (!$agg.ContainsKey($key)) { $agg[$key] = @() }
         $agg[$key] += "<h3>$title</h3><p>$content</p>"
+        
+        # Log the small note being aggregated
+        $tagsString = if ($tags.Count -gt 0) { "'$($tags -join "', '")'" } else { "(no tags)" }
+        Write-Host "  + Small note: '$title' → Aggregating to '$pageTitle' (in $groupName/$sectionName) [Tags: $tagsString]"
     } else {
         $html = @"
 <!DOCTYPE html>
@@ -370,7 +382,10 @@ $content
 </html>
 "@
         Post-Page -SectionId $secId -Html $html
-        Write-Host "  + Large page: $title (in $groupName/$sectionName)"
+        
+        # Enhanced logging with full details
+        $tagsString = if ($tags.Count -gt 0) { "'$($tags -join "', '")'" } else { "(no tags)" }
+        Write-Host "  + Large page: '$title' → $groupName/$sectionName [Tags: $tagsString]"
     }
 }
 
@@ -392,7 +407,10 @@ $body
 </html>
 "@
     Post-Page -SectionId $secId -Html $html
-    Write-Host "  + Aggregated page: $pageTitle"
+    
+    # Enhanced logging for aggregated pages
+    $count = ($agg[$k] -split "<h3>").Count - 1
+    Write-Host "  + Aggregated page: '$pageTitle' with $count notes"
 }
 
 Write-Host "`nImport complete!"
