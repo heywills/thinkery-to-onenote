@@ -38,7 +38,7 @@
 
 param(
     [Parameter(Mandatory = $true)][string]$AccessToken,
-    [string]$JsonPath = ".\\thinkery-tiriansdoor.json",
+    [string]$JsonPath = ".\\import-files\\thinkery-tiriansdoor.json",
     [string]$NotebookName = "Thinkery Tiriansdoor Import",
     [switch]$DryRun = $false
 )
@@ -135,143 +135,276 @@ if ($DryRun) {
 Write-Host "Notebook created with id $notebookId"
 
 # 2. Section Groups & Sections
-$sectionGroups = @("Bible","Homeschool","Gift Ideas","Wish Lists","Health","Home","Outdoor & Gear","Pets","Hunting & Shooting","Misc Notes","Book Trackers","Blog / Writing Ideas")
-$sectionsPerGroup = @{
-    "Bible" = @("Memory Verses","Study Notes");
-    "Homeschool" = @("Task Lists","Courses & Resources");
-    "Gift Ideas" = @("Amy","Jessica","Joseph","General");
-    "Wish Lists" = @("Mike");
-    "Health" = @("Family Health","Personal Trackers");
-    "Home" = @("Maintenance Log","Contractors & Quotes");
-    "Outdoor & Gear" = @("Gear Lists","Trip Planning");
-    "Pets" = @("Health History","Food & Supplies");
-    "Hunting & Shooting" = @("Turkey Tips","Deer & Elk","Equipment");
-    "Misc Notes" = @("Tech Snippets","Quotes","Inbox");
-    "Book Trackers" = @("Series");
-    "Blog / Writing Ideas" = @("CMS Ideas","App Ideas","Other Drafts");
-}
+$notebookStructure = @(
+    @{
+        OneNoteSectionGroupName = "Bible"
+        OneNoteSectionGroupId = $null
+        OneNoteSections = @(
+            @{
+                OneNoteSectionName = "Memory Verses"
+                OneNoteSectionId = $null
+                ThinkeryTags = @("memory_verse")
+            },
+            @{
+                OneNoteSectionName = "Study Notes"
+                OneNoteSectionId = $null
+                ThinkeryTags = @()  # Default for Bible group
+            }
+        )
+    },
+    @{
+        OneNoteSectionGroupName = "Homeschool"
+        OneNoteSectionGroupId = $null
+        OneNoteSections = @(
+            @{
+                OneNoteSectionName = "Task Lists"
+                OneNoteSectionId = $null
+                ThinkeryTags = @("todo")
+            },
+            @{
+                OneNoteSectionName = "Courses & Resources"
+                OneNoteSectionId = $null
+                ThinkeryTags = @()  # Default for Homeschool group
+            }
+        )
+    },
+    @{
+        OneNoteSectionGroupName = "Gift Ideas"
+        OneNoteSectionGroupId = $null
+        OneNoteSections = @(
+            @{
+                OneNoteSectionName = "Amy"
+                OneNoteSectionId = $null
+                ThinkeryTags = @("amy")
+            },
+            @{
+                OneNoteSectionName = "Jessica"
+                OneNoteSectionId = $null
+                ThinkeryTags = @("jessica")
+            },
+            @{
+                OneNoteSectionName = "Joseph"
+                OneNoteSectionId = $null
+                ThinkeryTags = @("joseph")
+            },
+            @{
+                OneNoteSectionName = "General"
+                OneNoteSectionId = $null
+                ThinkeryTags = @()  # Default for Gift Ideas group
+            }
+        )
+    },
+    @{
+        OneNoteSectionGroupName = "Wish Lists"
+        OneNoteSectionGroupId = $null
+        OneNoteSections = @(
+            @{
+                OneNoteSectionName = "Mike"
+                OneNoteSectionId = $null
+                ThinkeryTags = @("mike", "me")
+            }
+        )
+    },
+    @{
+        OneNoteSectionGroupName = "Health"
+        OneNoteSectionGroupId = $null
+        OneNoteSections = @(
+            @{
+                OneNoteSectionName = "Family Health"
+                OneNoteSectionId = $null
+                ThinkeryTags = @("family")
+            },
+            @{
+                OneNoteSectionName = "Personal Trackers"
+                OneNoteSectionId = $null
+                ThinkeryTags = @()  # Default for Health group
+            }
+        )
+    },
+    @{
+        OneNoteSectionGroupName = "Home"
+        OneNoteSectionGroupId = $null
+        OneNoteSections = @(
+            @{
+                OneNoteSectionName = "Maintenance Log"
+                OneNoteSectionId = $null
+                ThinkeryTags = @("maintenance", "repair")
+            },
+            @{
+                OneNoteSectionName = "Contractors & Quotes"
+                OneNoteSectionId = $null
+                ThinkeryTags = @("contractor", "quote")
+            }
+        )
+    },
+    @{
+        OneNoteSectionGroupName = "Outdoor & Gear"
+        OneNoteSectionGroupId = $null
+        OneNoteSections = @(
+            @{
+                OneNoteSectionName = "Gear Lists"
+                OneNoteSectionId = $null
+                ThinkeryTags = @()  # Default for Outdoor & Gear group
+            },
+            @{
+                OneNoteSectionName = "Trip Planning"
+                OneNoteSectionId = $null
+                ThinkeryTags = @("trip")
+            }
+        )
+    },
+    @{
+        OneNoteSectionGroupName = "Pets"
+        OneNoteSectionGroupId = $null
+        OneNoteSections = @(
+            @{
+                OneNoteSectionName = "Health History"
+                OneNoteSectionId = $null
+                ThinkeryTags = @("health", "vet")
+            },
+            @{
+                OneNoteSectionName = "Food & Supplies"
+                OneNoteSectionId = $null
+                ThinkeryTags = @("food", "supplies")
+            }
+        )
+    },
+    @{
+        OneNoteSectionGroupName = "Hunting & Shooting"
+        OneNoteSectionGroupId = $null
+        OneNoteSections = @(
+            @{
+                OneNoteSectionName = "Turkey Tips"
+                OneNoteSectionId = $null
+                ThinkeryTags = @("turkey", "turkey_tips")
+            },
+            @{
+                OneNoteSectionName = "Deer & Elk"
+                OneNoteSectionId = $null
+                ThinkeryTags = @("deer", "elk")
+            },
+            @{
+                OneNoteSectionName = "Equipment"
+                OneNoteSectionId = $null
+                ThinkeryTags = @()  # Default for Hunting & Shooting group
+            }
+        )
+    },
+    @{
+        OneNoteSectionGroupName = "Misc Notes"
+        OneNoteSectionGroupId = $null
+        OneNoteSections = @(
+            @{
+                OneNoteSectionName = "Tech Snippets"
+                OneNoteSectionId = $null
+                ThinkeryTags = @("tech", "tech_tip", "tips")
+            },
+            @{
+                OneNoteSectionName = "Quotes"
+                OneNoteSectionId = $null
+                ThinkeryTags = @("quotes")
+            },
+            @{
+                OneNoteSectionName = "Inbox"
+                OneNoteSectionId = $null
+                ThinkeryTags = @()  # Default for Misc Notes group
+            }
+        )
+    },
+    @{
+        OneNoteSectionGroupName = "Book Trackers"
+        OneNoteSectionGroupId = $null
+        OneNoteSections = @(
+            @{
+                OneNoteSectionName = "Series"
+                OneNoteSectionId = $null
+                ThinkeryTags = @()  # Default for Book Trackers group
+            }
+        )
+    },
+    @{
+        OneNoteSectionGroupName = "Blog / Writing Ideas"
+        OneNoteSectionGroupId = $null
+        OneNoteSections = @(
+            @{
+                OneNoteSectionName = "CMS Ideas"
+                OneNoteSectionId = $null
+                ThinkeryTags = @("cms", "kentico", "sitefinity")
+            },
+            @{
+                OneNoteSectionName = "App Ideas"
+                OneNoteSectionId = $null
+                ThinkeryTags = @("app", "utility")
+            },
+            @{
+                OneNoteSectionName = "Other Drafts"
+                OneNoteSectionId = $null
+                ThinkeryTags = @()  # Default for Blog / Writing Ideas group
+            }
+        )
+    }
+)
 
-$sgIds   = @{}
-$secIds  = @{}
-
-foreach ($sg in $sectionGroups) {
-    $sgIds[$sg] = Create-SectionGroup -NotebookId $notebookId -Name $sg
-    Write-Host "  Section Group: $sg"
-    foreach ($sec in $sectionsPerGroup[$sg]) {
-        $secIds["$sg|$sec"] = Create-Section -SectionGroupId $sgIds[$sg] -Name $sec
-        Write-Host "    Section: $sec"
+# Create section groups and sections based on our structure
+foreach ($group in $notebookStructure) {
+    # Create section group and store ID
+    $group.OneNoteSectionGroupId = Create-SectionGroup -NotebookId $notebookId -Name $group.OneNoteSectionGroupName
+    Write-Host "  Section Group: $($group.OneNoteSectionGroupName)"
+    
+    foreach ($section in $group.OneNoteSections) {
+        # Create section and store ID
+        $section.OneNoteSectionId = Create-Section -SectionGroupId $group.OneNoteSectionGroupId -Name $section.OneNoteSectionName
+        Write-Host "    Section: $($section.OneNoteSectionName)"
     }
 }
 
-# 3. Helper functions for note routing
-Function Get-FolderTag($Tags) {
-    if ($null -eq $Tags -or $Tags.Count -eq 0) {
-        return "misc_notes_folder"
+# Find the most appropriate section for a set of tags
+Function Find-BestMatchSection($Tags) {
+    # Track the best match
+    $bestMatchGroup = $null
+    $bestMatchSection = $null
+    $bestMatchCount = -1
+    
+    # Default to Misc Notes/Inbox if no match is found
+    $defaultGroup = $notebookStructure | Where-Object { $_.OneNoteSectionGroupName -eq "Misc Notes" }
+    $defaultSection = $defaultGroup.OneNoteSections | Where-Object { $_.OneNoteSectionName -eq "Inbox" }
+    
+    # Go through each group and section to find the best tag match
+    foreach ($group in $notebookStructure) {
+        foreach ($section in $group.OneNoteSections) {
+            # Count how many tags match
+            $matchCount = 0
+            foreach ($tag in $Tags) {
+                if ($section.ThinkeryTags -contains $tag) {
+                    $matchCount++
+                }
+            }
+            
+            # Update best match if this is better
+            if ($matchCount -gt $bestMatchCount) {
+                $bestMatchGroup = $group
+                $bestMatchSection = $section
+                $bestMatchCount = $matchCount
+            }
+        }
     }
     
-    $folderTags = $Tags | Where-Object { $_ -like "*_folder" }
-    if ($null -eq $folderTags -or $folderTags.Count -eq 0) {
-        return "misc_notes_folder"
+    # If no matches found, use default section or first section in group
+    if ($bestMatchCount -eq 0) {
+        # Try to find a default section in the first matching group
+        foreach ($group in $notebookStructure) {
+            $defaultGroupSection = $group.OneNoteSections | Where-Object { $_.ThinkeryTags.Count -eq 0 }
+            if ($defaultGroupSection) {
+                return @{ Group = $group; Section = $defaultGroupSection }
+            }
+        }
+        
+        # If still no match, use the global default
+        return @{ Group = $defaultGroup; Section = $defaultSection }
     }
     
-    # Check if $folderTags is a string or an array
-    if ($folderTags -is [string]) {
-        return $folderTags
-    } else {
-        return $folderTags[0]
-    }
+    return @{ Group = $bestMatchGroup; Section = $bestMatchSection }
 }
-
-Function MapFolderToGroup($Folder) {
-    switch ($Folder) {
-        "bible_folder"       { return "Bible" }
-        "homeschool_folder"  { return "Homeschool" }
-        "gift_ideas_folder"  { return "Gift Ideas" }
-        "wish_list_folder"   { return "Wish Lists" }
-        "misc_notes_folder"  { return "Misc Notes" }
-        "outdoor_folder"    { return "Outdoor & Gear" }
-        "outdoors_folder"   { return "Outdoor & Gear" }
-        "prayers_folder"  { return "Bible" }
-        default              { return "Misc Notes" }
-    }
-}
-
-# Function MapToSection($Group,$Tags) {
-#     switch ($Group) {
-#         "Bible"              { if ($Tags -contains "memory_verse") { return "Memory Verses" } else { return "Study Notes" } }
-#         "Homeschool"         { if ($Tags -contains "todo") { return "Task Lists" } else { return "Courses & Resources" } }
-#         "Gift Ideas"         { $p = $Tags | Where-Object { $_ -in "mike","me" }; if ($p){ return ($p[0] -replace "^.").ToUpper()+$p[0].Substring(1) } else { return "General" } }
-#         "Wish Lists"         { $p = $Tags | Where-Object { $_ -in "amy","jessica","joseph"}; if ($p){ return ($p[0] -replace "^.").ToUpper()+$p[0].Substring(1) } else { return "General" } }
-#         default              { return $sectionsPerGroup[$Group][0] }
-#     }
-# }
-
-Function MapToSection($Group, $Tags) {
-    # Add breakpoint if any element in $Tags is a char
-    foreach ($tag in $Tags) {
-        if ($tag -is [char]) {
-            Write-Host "Breakpoint: Found a char in Tags: '$tag'" -ForegroundColor Red
-            Break
-        }
-    }
-    
-    switch ($Group) {
-        "Bible" {
-            if ($Tags -contains "memory_verse") { return "Memory Verses" }
-            else { return "Study Notes" }
-        }
-        "Homeschool" {
-            if ($Tags -contains "todo") { return "Task Lists" }
-            else { return "Courses & Resources" }
-        }
-        "Gift Ideas" {
-            $p = $Tags | Where-Object { $_ -in "mike","me","jessica","amy","joseph" }
-            if ($p) {
-                return ($p[0].Substring(0,1).ToUpper() + $p[0].Substring(1))
-            } else {
-                return "General"
-            }
-        }
-        "Wish Lists" {
-            $p = $Tags | Where-Object { $_ -in "mike","amy","jessica","joseph" }
-            if ($p) {
-                return ($p[0].Substring(0,1).ToUpper() + $p[0].Substring(1))
-            } else {
-                return "General"
-            }
-        }
-        "Misc Notes" {
-            if ($Tags -contains "quotes") { return "Quotes" }
-            elseif ($Tags -contains "tech" -or $Tags -contains "tech_tip" -or $Tags -contains "tips") {
-                return "Tech Snippets"
-            } else {
-                return "Inbox"
-            }
-        }
-        "Hunting & Shooting" {
-            if ($Tags -contains "turkey" -or $Tags -contains "turkey_tips") { return "Turkey Tips" }
-            elseif ($Tags -contains "deer" -or $Tags -contains "elk") { return "Deer & Elk" }
-            else { return "Equipment" }
-        }
-        "Outdoor & Gear" {
-            if ($Tags -contains "trip") { return "Trip Planning" }
-            else { return "Gear Lists" }
-        }
-        "Blog / Writing Ideas" {
-            if ($Tags -contains "cms" -or $Tags -contains "kentico" -or $Tags -contains "sitefinity") {
-                return "CMS Ideas"
-            } elseif ($Tags -contains "app" -or $Tags -contains "utility") {
-                return "App Ideas"
-            } else {
-                return "Other Drafts"
-            }
-        }
-        default {
-            return $sectionsPerGroup[$Group][0]
-        }
-    }
-}
-
 
 Write-Host "`nImporting pages..."
 
@@ -281,15 +414,20 @@ $agg = @{}   # sectionId|title => [html fragments]
 $json = Get-Content $JsonPath -Raw | ConvertFrom-Json
 foreach ($n in $json) {
     $tags = ($n.tags -split "\s+") | Where-Object { $_ }
-    $folder = Get-FolderTag $tags
-    $group  = MapFolderToGroup $folder
-    $section = MapToSection $group $tags
-    $secId = $secIds["$group|$section"]
-
-    if (!$secId) { 
-        Write-Warning "No section found for group '$group' and section '$section'. Skipping note: $($n.title)"
+    
+    # Find the best matching section based on tags
+    $match = Find-BestMatchSection -Tags $tags
+    $group = $match.Group
+    $section = $match.Section
+    
+    if (!$group -or !$section) { 
+        Write-Warning "No matching section found for note: $($n.title). Skipping."
         continue 
     }
+    
+    $secId = $section.OneNoteSectionId
+    $groupName = $group.OneNoteSectionGroupName
+    $sectionName = $section.OneNoteSectionName
 
     $created = [DateTime]::Parse($n.date).ToString("o")
     $title   = $n.title
@@ -297,7 +435,7 @@ foreach ($n in $json) {
     $noteLen = $content.Length
 
     if ($noteLen -lt $tinyThreshold) {
-        $pageTitle = "Quick Notes - $section"
+        $pageTitle = "Quick Notes - $sectionName"
         $key = "$secId|$pageTitle"
         if (!$agg.ContainsKey($key)) { $agg[$key] = @() }
         $agg[$key] += "<h3>$title</h3><p>$content</p>"
@@ -315,7 +453,7 @@ $content
 </html>
 "@
         Post-Page -SectionId $secId -Html $html
-        Write-Host "  + Large page: $title"
+        Write-Host "  + Large page: $title (in $groupName/$sectionName)"
     }
 }
 
