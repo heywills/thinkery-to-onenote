@@ -305,8 +305,8 @@ Function Find-BestMatchSection($Tags) {
             $matchPercentage = ($matchRatio * 0.4) + ($specificityRatio * 0.6)
             
             # Update best match if this is better
-            if ($matchCount > $bestMatchCount || 
-               ($matchCount -eq $bestMatchCount -and $matchPercentage > $bestMatchPercentage)) {
+            if ($matchCount -gt $bestMatchCount || 
+               ($matchCount -eq $bestMatchCount -and $matchPercentage -gt $bestMatchPercentage)) {
                 $bestMatchGroup = $group
                 $bestMatchSection = $section
                 $bestMatchCount = $matchCount
@@ -316,7 +316,7 @@ Function Find-BestMatchSection($Tags) {
     }
     
     # If no matches found, use the default uncategorized section
-    if ($bestMatchCount -eq 0) {
+    if ($bestMatchCount -eq -1) {
         return @{ Group = $defaultGroup; Section = $defaultSection }
     }
     
