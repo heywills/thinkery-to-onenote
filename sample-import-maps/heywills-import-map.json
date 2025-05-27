@@ -15,7 +15,8 @@
   {
     "OneNoteSectionGroupName": "Homeschool",
     "OneNoteSections": [
-      { "OneNoteSectionName": "Task Lists", "ThinkeryTags": ["homeschool"] },
+      { "OneNoteSectionName": "General homeschool notes", "ThinkeryTags": ["homeschool_folder"] },
+      { "OneNoteSectionName": "Task Lists", "ThinkeryTags": ["homeschool", "homeschool_folder", "todo"] },
       { "OneNoteSectionName": "Courses & Resources", "ThinkeryTags": ["courses", "teaching"] }
     ]
   },
@@ -38,7 +39,8 @@
     "OneNoteSectionGroupName": "Health",
     "OneNoteSections": [
       { "OneNoteSectionName": "Family Health", "ThinkeryTags": ["family_health", "health"] },
-      { "OneNoteSectionName": "Personal Trackers", "ThinkeryTags": ["personal", "tracker", "exercise", "diet", "medical"] }
+      { "OneNoteSectionName": "Personal Trackers", "ThinkeryTags": ["personal", "tracker", "exercise", "diet", "medical", "personality", "medical_history", "health_records"] },
+      { "OneNoteSectionName": "Journals", "ThinkeryTags": ["gratitude_list"] }
     ]
   },
   {
@@ -58,7 +60,7 @@
   {
     "OneNoteSectionGroupName": "Pets",
     "OneNoteSections": [
-      { "OneNoteSectionName": "Health History", "ThinkeryTags": ["health_history", "pets"] },
+      { "OneNoteSectionName": "Health History", "ThinkeryTags": ["health_history", "pets", "oliver", "pet"] },
       { "OneNoteSectionName": "Food & Supplies", "ThinkeryTags": ["dog", "dogs", "cat", "cats", "food"] }
     ]
   },
@@ -75,7 +77,7 @@
     "OneNoteSections": [
       { "OneNoteSectionName": "Aeneas Valley", "ThinkeryTags": ["aeneas_valley"] },
       { "OneNoteSectionName": "Colville", "ThinkeryTags": ["colville"] },
-      { "OneNoteSectionName": "Vacation", "ThinkeryTags": ["vacation"] }
+      { "OneNoteSectionName": "Vacation", "ThinkeryTags": ["vacation", "backpacking", "outdoor"] }
     ]
   },
   {
@@ -84,7 +86,7 @@
       { "OneNoteSectionName": "Kentico", "ThinkeryTags": ["kentico"] },
       { "OneNoteSectionName": "SharePoint", "ThinkeryTags": ["sharepoint"] },
       { "OneNoteSectionName": "Code snippets", "ThinkeryTags": ["html", "css", "javascript", "regex", "tdd", "code", "widgets"] },
-      { "OneNoteSectionName": "Devices & ROMs", "ThinkeryTags": ["android", "nook_color", "rom", "phone", "root"] },
+      { "OneNoteSectionName": "Devices & ROMs", "ThinkeryTags": ["android", "nook_color", "rom", "phone", "root", "router"] },
       { "OneNoteSectionName": "Bugs", "ThinkeryTags": ["bugs"] }
     ]
   },
@@ -99,6 +101,7 @@
     "OneNoteSections": [
       { "OneNoteSectionName": "Tasks", "ThinkeryTags": ["task", "todo", "type_checklist"] },
       { "OneNoteSectionName": "Quotes", "ThinkeryTags": ["quotes"] },
+      { "OneNoteSectionName": "Career", "ThinkeryTags": ["career"] },
       {
         "OneNoteSectionName": "Inbox",
         "ThinkeryTags": [
@@ -120,7 +123,7 @@
     "OneNoteSectionGroupName": "Blog - Writing Ideas",
     "OneNoteSections": [
       { "OneNoteSectionName": "CMS Ideas", "ThinkeryTags": ["cms_ideas"] },
-      { "OneNoteSectionName": "App Ideas", "ThinkeryTags": ["app_ideas"] },
+      { "OneNoteSectionName": "App Ideas", "ThinkeryTags": ["app_ideas", "app_idea"] },
       { "OneNoteSectionName": "Other Drafts", "ThinkeryTags": ["blog_ideas"] }
     ]
   }
