@@ -20,7 +20,19 @@ The `Import-ThinkeryExportIntoOneNote.ps1` script helps you migrate your notes f
 - A Microsoft account with access to OneNote
 - A JSON export of your Thinkery notes
 
-### Step 1: Get an Access Token
+### Step 1: Prepare Your Import File
+
+1. Export your notes from Thinkery in JSON format
+2. Place your Thinkery JSON export in the `import-files` folder
+3. Make note of the exact path to use with the `-JsonPath` parameter
+
+### Step 2: Create Your Import Mapping Configuration
+
+1. Create or customize an import map JSON file based on the structure below
+2. Save your import map in the `sample-import-maps` folder or another location
+3. Make note of the exact path to use with the `-ImportMapPath` parameter
+
+### Step 3: Get an Access Token
 
 1. Open [Graph Explorer](https://developer.microsoft.com/en-us/graph/graph-explorer)
 2. Sign in with your Microsoft account
@@ -31,12 +43,7 @@ The `Import-ThinkeryExportIntoOneNote.ps1` script helps you migrate your notes f
    - Click Consent next to "Notes.ReadWrite"
 4. Click the "Access token" section and copy the token
 
-### Step 2: Prepare Your Files
-
-1. Place your Thinkery JSON export in the `import-files` folder
-2. Create or customize an import map JSON file (see Import Map Structure below)
-
-### Step 3: Run the Script
+### Step 4: Run the Script
 
 ```powershell
 .\Import-ThinkeryExportIntoOneNote.ps1 `
