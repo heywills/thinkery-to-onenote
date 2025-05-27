@@ -184,6 +184,10 @@ Function Validate-ImportMap($importMap) {
     return $true
 }
 
+# Constants for default uncategorized content
+$DEFAULT_GROUP_NAME = "Uncategorized"
+$DEFAULT_SECTION_NAME = "Uncategorized imported items"
+
 # 1. Notebook
 if ($DryRun) {
     Write-Host "[DRY RUN] Would create notebook '$NotebookName'" -ForegroundColor Yellow
@@ -219,7 +223,20 @@ try {
         }
     }
     
-    Write-Host "Import map loaded successfully with ${$notebookStructure.Count} section groups."
+    # Add a default section group and section for uncategorized content
+    $notebookStructure += @{
+        OneNoteSectionGroupName = $DEFAULT_GROUP_NAME
+        OneNoteSectionGroupId = $null
+        OneNoteSections = @(
+            @{
+                OneNoteSectionName = $DEFAULT_SECTION_NAME
+                OneNoteSectionId = $null
+                ThinkeryTags = @()
+            }
+        )
+    }
+    
+    Write-Host "Import map loaded successfully with $($notebookStructure.Count) section groups."
 }
 catch {
     Write-Error "Error loading or validating import map: $_"
@@ -245,14 +262,25 @@ Function Find-BestMatchSection($Tags) {
     $bestMatchGroup = $null
     $bestMatchSection = $null
     $bestMatchCount = -1
+    $bestMatchPercentage = 0
     
-    # Default to Misc Notes/Inbox if no match is found
-    $defaultGroup = $notebookStructure | Where-Object { $_.OneNoteSectionGroupName -eq "Misc Notes" }
-    $defaultSection = $defaultGroup.OneNoteSections | Where-Object { $_.OneNoteSectionName -eq "Inbox" }
+    # Find the default group and section for uncategorized content
+    $defaultGroup = $notebookStructure | Where-Object { $_.OneNoteSectionGroupName -eq $DEFAULT_GROUP_NAME }
+    $defaultSection = $defaultGroup.OneNoteSections | Where-Object { $_.OneNoteSectionName -eq $DEFAULT_SECTION_NAME }
     
     # Go through each group and section to find the best tag match
     foreach ($group in $notebookStructure) {
+        # Skip the default group during matching
+        if ($group.OneNoteSectionGroupName -eq $DEFAULT_GROUP_NAME) {
+            continue
+        }
+        
         foreach ($section in $group.OneNoteSections) {
+            # Skip sections with no tags defined
+            if ($section.ThinkeryTags.Count -eq 0) {
+                continue
+            }
+            
             # Count how many tags match
             $matchCount = 0
             foreach ($tag in $Tags) {
@@ -261,26 +289,34 @@ Function Find-BestMatchSection($Tags) {
                 }
             }
             
+            # Skip if no matches
+            if ($matchCount -eq 0) {
+                continue
+            }
+            
+            # Calculate match quality:
+            # 1. How many tags from the note match this section
+            $matchRatio = [math]::Min(1.0, $matchCount / [math]::Max(1, $Tags.Count))
+            
+            # 2. How many section tags are matched (specificity)
+            $specificityRatio = [math]::Min(1.0, $matchCount / [math]::Max(1, $section.ThinkeryTags.Count))
+            
+            # Combined score (emphasizes specificity slightly more)
+            $matchPercentage = ($matchRatio * 0.4) + ($specificityRatio * 0.6)
+            
             # Update best match if this is better
-            if ($matchCount -gt $bestMatchCount) {
+            if ($matchCount > $bestMatchCount || 
+               ($matchCount -eq $bestMatchCount -and $matchPercentage > $bestMatchPercentage)) {
                 $bestMatchGroup = $group
                 $bestMatchSection = $section
                 $bestMatchCount = $matchCount
+                $bestMatchPercentage = $matchPercentage
             }
         }
     }
     
-    # If no matches found, use default section or first section in group
+    # If no matches found, use the default uncategorized section
     if ($bestMatchCount -eq 0) {
-        # Try to find a default section in the first matching group
-        foreach ($group in $notebookStructure) {
-            $defaultGroupSection = $group.OneNoteSections | Where-Object { $_.ThinkeryTags.Count -eq 0 }
-            if ($defaultGroupSection) {
-                return @{ Group = $group; Section = $defaultGroupSection }
-            }
-        }
-        
-        # If still no match, use the global default
         return @{ Group = $defaultGroup; Section = $defaultSection }
     }
     
