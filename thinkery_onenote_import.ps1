@@ -46,9 +46,9 @@
 
 param(
     [Parameter(Mandatory = $true)][string]$AccessToken,
-    [string]$JsonPath = ".\\import-files\\thinkery-tiriansdoor.json",
-    [string]$NotebookName = "Thinkery Tiriansdoor Import",
-    [string]$ImportMapPath = ".\\sample-import-maps\\heywills-import-map.json",
+    [Parameter(Mandatory = $true)][string]$JsonPath,
+    [string]$NotebookName = "Thinkery Import",
+    [Parameter(Mandatory = $true)][string]$ImportMapPath,
     [int]$TinyNoteThreshold = 140,
     [string]$LogPath = ".\\logs",
     [switch]$DryRun = $false
