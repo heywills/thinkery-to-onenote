@@ -32,22 +32,12 @@ The `Import-ThinkeryExportIntoOneNote.ps1` script helps you migrate your notes f
 2. Save your import map in the `sample-import-maps` folder or another location
 3. Make note of the exact path to use with the `-ImportMapPath` parameter
 
-### Step 3: Get an Access Token
+### Step 3: Run the Script
 
-1. Open [Graph Explorer](https://developer.microsoft.com/en-us/graph/graph-explorer)
-2. Sign in with your Microsoft account
-3. Set the permissions to Notes.ReadWrite:
-   - Choose API Explorer from the left menu
-   - Expand me->onenote->notebooks->post
-   - Click "Modify permissions"
-   - Click Consent next to "Notes.ReadWrite"
-4. Click the "Access token" section and copy the token
-
-### Step 4: Run the Script
+The script uses interactive authentication to connect to Microsoft Graph API:
 
 ```powershell
 .\Import-ThinkeryExportIntoOneNote.ps1 `
-    -AccessToken "your-access-token-here" `
     -JsonPath ".\import-files\your-thinkery-export.json" `
     -ImportMapPath ".\sample-import-maps\your-import-map.json"
 ```
@@ -57,7 +47,7 @@ The `Import-ThinkeryExportIntoOneNote.ps1` script helps you migrate your notes f
 - `-NotebookName "Your Notebook Name"` - Customize the name of the OneNote notebook (default: "Thinkery Import")
 - `-TinyNoteThreshold 140` - Character threshold for aggregating small notes (default: 140 characters)
 - `-LogPath ".\custom-logs"` - Custom path for logs (default: ".\logs")
-- `-DryRun` - Test the script without making changes to OneNote
+- `-DryRun` - Test the script without making changes to OneNote (skips authentication)
 
 ## Import Map Structure
 
@@ -99,7 +89,7 @@ The import map is a JSON file that defines how your notes should be organized in
 ### Structure Details
 
 1. **Top Level Array**: A list of section groups
-   
+
 2. **Section Group Object**:
    - `OneNoteSectionGroupName`: Name of the section group in OneNote
    - `OneNoteSections`: Array of section objects
@@ -129,6 +119,7 @@ When importing notes, the script:
 If you encounter issues:
 
 1. Check the log files in the `logs` directory
-2. Ensure your access token is valid (they expire relatively quickly)
-3. Verify your import map file has the correct structure
-4. Make sure your Thinkery export JSON is valid
+2. Run the script with `-DryRun` parameter to test without making any changes
+3. If authentication fails, restart your application and try again
+4. Verify your import map file has the correct structure
+5. Make sure your Thinkery export JSON is valid

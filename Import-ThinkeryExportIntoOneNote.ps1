@@ -4,20 +4,17 @@
 
 .DESCRIPTION
     1. Creates a new notebook (default name "Thinkery Import", override with -NotebookName).
-    2. Builds section groups and sections according to the mapping discussed with ChatGPT.
+    2. Builds section groups and sections according to the mapping specified in the import map.
     3. Parses the Thinkery JSON export, creating:
-       * One page per "large" note (≥ 300 characters).
-       * Aggregated "Quick Notes – {Topic}" pages, where every tiny note (< 300 characters) becomes its own <h3> heading + body.
-    4. Requires a short‑lived delegated access token with Notes.ReadWrite scope.
-
-.PARAMETER AccessToken
-    OAuth 2.0 bearer token copied from Graph Explorer (Notes.ReadWrite).
+       * One page per "large" note (≥ 140 characters by default).
+       * Aggregated pages for tiny notes grouped by tags.
+    4. Uses interactive authentication with Microsoft Graph API.
 
 .PARAMETER JsonPath
-    Path to the thinkery‑tiriansdoor.json file.
+    Path to the Thinkery JSON export file.
 
 .PARAMETER NotebookName
-    Display name for the new notebook.  Default: "Thinkery Import"
+    Display name for the new notebook. Default: "Thinkery Import"
 
 .PARAMETER ImportMapPath
     Path to the JSON file defining OneNote structure and tag mappings.
@@ -27,25 +24,27 @@
     Character count threshold below which notes are considered "tiny" and will be aggregated.
     Default: 140
 
+.PARAMETER LogPath
+    Path where log files will be stored. Default: "./logs"
+
 .PARAMETER DryRun
     If specified, the script will not make any changes, only report what it would do.
 
-.INSTRUCTIONS
-    1. Open Graph Explorer: https://developer.microsoft.com/en-us/graph/graph-explorer
-    2. Sign in with your Microsoft account.
-    3. Set the permissions to Notes.ReadWrite.
-       a.Choose API Explorer from the left menu.
-       b. Expand me->onenote->notebooks->post
-       c. Click "Modify permissions"
-       d. Click Consent next to "Notes.ReadWrite".
-    4. Click the "Access token" section and copy the token.
-    5. Run this script with the copied token and your Thinkery JSON export file.
-    Example:
-        .\thinkery_onenote_import.ps1 -AccessToken "eyJ0eXAiOiJKV
+.EXAMPLE
+    # Run with interactive authentication:
+    .\Import-ThinkeryExportIntoOneNote.ps1 `
+        -JsonPath ".\import-files\thinkery-export.json" `
+        -ImportMapPath ".\sample-import-maps\my-import-map.json"
+
+.EXAMPLE
+    # Dry run to test without making changes:
+    .\Import-ThinkeryExportIntoOneNote.ps1 `
+        -JsonPath ".\import-files\thinkery-export.json" `
+        -ImportMapPath ".\sample-import-maps\my-import-map.json" `
+        -DryRun
 #>
 
 param(
-    [Parameter(Mandatory = $true)][string]$AccessToken,
     [Parameter(Mandatory = $true)][string]$JsonPath,
     [string]$NotebookName = "Thinkery Import",
     [Parameter(Mandatory = $true)][string]$ImportMapPath,
@@ -106,6 +105,54 @@ Write-Log "  NotebookName: $NotebookName" "INFO"
 Write-Log "  ImportMapPath: $ImportMapPath" "INFO"
 Write-Log "  TinyNoteThreshold: $TinyNoteThreshold" "INFO"
 Write-Log "  DryRun: $DryRun" "INFO"
+
+# Interactive authentication function
+Function Get-InteractiveAccessToken {
+    Write-Log "Starting interactive authentication..." "INFO"
+    
+    # Check if MSAL.PS module is installed
+    if (-not (Get-Module -ListAvailable -Name MSAL.PS)) {
+        Write-Log "MSAL.PS module not found. Installing..." "INFO"
+        try {
+            Install-Module -Name MSAL.PS -Scope CurrentUser -Force -ErrorAction Stop
+        }
+        catch {
+            Write-Log "Failed to install MSAL.PS module: $_" "ERROR"
+            Write-Log "Please install the MSAL.PS module manually: Install-Module -Name MSAL.PS -Scope CurrentUser -Force" "ERROR"
+            throw "MSAL.PS module is required for authentication"
+        }
+    }
+    
+    # Import the module
+    Import-Module MSAL.PS
+    
+    $clientId = "14d82eec-204b-4c2f-b7e8-296a70dab67e" # Microsoft Graph Explorer client ID
+    $tenantId = "common"                               # Use 'common' for any tenant
+    $redirectUri = "https://login.microsoftonline.com/common/oauth2/nativeclient"
+    $scopes = @("https://graph.microsoft.com/Notes.ReadWrite")
+    
+    try {
+        # Acquire token interactively
+        Write-Log "Launching interactive login window..." "INFO"
+        $authResult = Get-MsalToken -ClientId $clientId -TenantId $tenantId -RedirectUri $redirectUri `
+                                  -Scopes $scopes -Interactive
+        
+        Write-Log "Authentication successful! Token acquired." "SUCCESS"
+        return $authResult.AccessToken
+    }
+    catch {
+        Write-Log "Failed to acquire access token: $_" "ERROR"
+        throw "Authentication failed. $_"
+    }
+}
+
+# Get access token if not in dry run mode
+if ($DryRun) {
+    Write-Log "Dry run mode - skipping authentication" "INFO"
+    $AccessToken = "dry-run-token"
+} else {
+    $AccessToken = Get-InteractiveAccessToken
+}
 
 Function Invoke-GraphPost($Uri, $BodyObj) {
     $json = $BodyObj | ConvertTo-Json -Depth 6
