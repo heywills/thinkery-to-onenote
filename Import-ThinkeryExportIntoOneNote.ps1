@@ -276,7 +276,12 @@ Function Create-OneNotePageWithTinyNotes {
     
     # Build HTML body from note objects for aggregated pages with multiple notes
     $bodyFragments = $Notes | ForEach-Object {
-        "<h3>$($_.title)</h3><p>$($_.content)</p>"
+        if ($_.content -is [bool]) {
+            $checkbox = if ($_.content) { "☑" } else { "☐" }
+            "<h3>$checkbox&nbsp;$($_.title)</h3>"
+        } else {
+            "<h3>$($_.title)</h3><p>$($_.content)</p>"
+        }
     }
     $body = $bodyFragments -join "`n"
     
