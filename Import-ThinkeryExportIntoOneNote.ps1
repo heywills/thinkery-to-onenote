@@ -239,7 +239,7 @@ Function Create-OneNotePage {
     param(
         [string]$SectionId,
         [string]$Title,
-        [string]$Content,
+        [object]$Content,
         [string]$Created,
         [string]$GroupName,
         [string]$SectionName,
@@ -254,7 +254,12 @@ Function Create-OneNotePage {
     <meta name="created" content="$Created"/>
 </head>
 <body>
-$Content
+$(if ($Content -is [bool]) {
+    $checkbox = if ($Content) { "☑" } else { "☐" }
+    "<h3>$checkbox&nbsp;$Title</h3>"
+} else {
+    $Content
+})
 </body>
 </html>
 "@
