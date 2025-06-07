@@ -1,12 +1,5 @@
 # Thinkery to OneNote Import Tool
 
-## TODO
-
-* ~~Refine mapping~~
-* Format checkboxes (e.g., Seat covers for the Trailblazer )
-* Only make a small note if there is more than one.
-* Add tags to all notes
-
 A PowerShell script that imports Thinkery JSON exports into Microsoft OneNote using the Microsoft Graph API.
 
 ## Purpose
