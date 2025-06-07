@@ -235,6 +235,38 @@ Function Post-Page {
     }
 }
 
+Function Create-OneNotePage {
+    param(
+        [string]$SectionId,
+        [string]$Title,
+        [string]$Content,
+        [string]$Created,
+        [string]$GroupName,
+        [string]$SectionName,
+        [array]$Tags
+    )
+    
+    $html = @"
+<!DOCTYPE html>
+<html>
+<head>
+    <title>$Title</title>
+    <meta name="created" content="$Created"/>
+</head>
+<body>
+$Content
+</body>
+</html>
+"@
+    Post-Page -SectionId $SectionId -Html $html
+    
+    # Enhanced logging with full details
+    $tagsString = if ($Tags.Count -gt 0) { "'$($Tags -join "', '")'" } else { "(no tags)" }
+    Write-Log "  + Large page: '$Title' → $GroupName/$SectionName [Tags: $tagsString]" "INFO"
+    
+    return $true
+}
+
 # Function to validate the import map structure
 Function Validate-ImportMap($importMap) {
     if ($null -eq $importMap) {
@@ -499,23 +531,8 @@ foreach ($n in $json) {
         Write-Log "  + Small note: '$title' → Aggregating to '$pageTitle' (in $groupName/$sectionName) [Tags: $tagsString]" "INFO"
         $smallNoteCount++
     } else {
-        $html = @"
-<!DOCTYPE html>
-<html>
-<head>
-    <title>$title</title>
-    <meta name="created" content="$created"/>
-</head>
-<body>
-$content
-</body>
-</html>
-"@
-        Post-Page -SectionId $secId -Html $html
-        
-        # Enhanced logging with full details
-        $tagsString = if ($tags.Count -gt 0) { "'$($tags -join "', '")'" } else { "(no tags)" }
-        Write-Log "  + Large page: '$title' → $groupName/$sectionName [Tags: $tagsString]" "INFO"
+        Create-OneNotePage -SectionId $secId -Title $title -Content $content -Created $created `
+                          -GroupName $groupName -SectionName $sectionName -Tags $tags
         $largeNoteCount++
     }
 }
