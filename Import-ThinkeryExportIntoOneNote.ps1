@@ -240,13 +240,12 @@ Function Create-OneNotePage {
         [string]$SectionId,
         [string]$Title,
         [object]$Content,
-        [string]$Created,
+        [DateTime]$Created,
         [string]$GroupName,
         [string]$SectionName,
         [array]$Tags
     )
     
-    # Get formatted tag string for display
     $tagList = Get-SortedTagString -Tags $Tags
     
     $html = @"
@@ -254,9 +253,10 @@ Function Create-OneNotePage {
 <html>
 <head>
     <title>$Title</title>
-    <meta name="created" content="$Created"/>
+    <meta name="created" content="$($Created.ToString('o'))"/>
 </head>
 <body>
+<p>Created: $($Created.ToLocalTime().ToString("g"))</p>
 <p>Tags: $tagList</p>
 $(if ($Content -is [bool]) {
     $checkbox = if ($Content) { "☑" } else { "☐" }
@@ -285,11 +285,13 @@ Function Create-OneNotePageWithTinyNotes {
     
     # Build HTML body from note objects for aggregated pages with multiple notes
     $bodyFragments = $Notes | ForEach-Object {
+        $createdDisplay = $_.created.ToLocalTime().ToString("g")
+        
         if ($_.content -is [bool]) {
             $checkbox = if ($_.content) { "☑" } else { "☐" }
-            "<h3>$checkbox&nbsp;$($_.title)</h3>"
+            "<h3>$checkbox&nbsp;$($_.title)</h3><p class='note-date'>Created: $createdDisplay</p>"
         } else {
-            "<h3>$($_.title)</h3><p>$($_.content)</p>"
+            "<h3>$($_.title)</h3><p class='note-date'>Created: $createdDisplay</p><p>$($_.content)</p>"
         }
     }
     $body = $bodyFragments -join "`n"
@@ -300,6 +302,14 @@ Function Create-OneNotePageWithTinyNotes {
 <head>
     <title>$PageTitle</title>
     <meta name="created" content="$(Get-Date -Format o)"/>
+    <style>
+        .note-date {
+            color: #666;
+            font-size: 0.9em;
+            margin-top: -10px;
+            font-style: italic;
+        }
+    </style>
 </head>
 <body>
 $body
@@ -553,7 +563,7 @@ foreach ($n in $json) {
     $groupName = $group.OneNoteSectionGroupName
     $sectionName = $section.OneNoteSectionName
 
-    $created = [DateTime]::Parse($n.date).ToString("o")
+    $created = [DateTime]::Parse($n.date) 
     $title   = $n.title
     $content = $n.html
     $noteLen = $content.Length
