@@ -267,6 +267,38 @@ $Content
     return $true
 }
 
+Function Create-OneNotePageWithTinyNotes {
+    param(
+        [string]$SectionId,
+        [string]$PageTitle,
+        [array]$Notes
+    )
+    
+    # Build HTML body from note objects for aggregated pages with multiple notes
+    $bodyFragments = $Notes | ForEach-Object {
+        "<h3>$($_.title)</h3><p>$($_.content)</p>"
+    }
+    $body = $bodyFragments -join "`n"
+    
+    $html = @"
+<!DOCTYPE html>
+<html>
+<head>
+    <title>$PageTitle</title>
+    <meta name="created" content="$(Get-Date -Format o)"/>
+</head>
+<body>
+$body
+</body>
+</html>
+"@
+    Post-Page -SectionId $SectionId -Html $html
+    
+    # Enhanced logging for aggregated pages
+    $count = $Notes.Count
+    Write-Log "  + Aggregated page: '$PageTitle' with $count notes" "SUCCESS"
+}
+
 # Function to validate the import map structure
 Function Validate-ImportMap($importMap) {
     if ($null -eq $importMap) {
@@ -565,29 +597,7 @@ foreach ($k in $agg.Keys) {
         Write-Log "  + Small note promoted to full page: '$($note.title)'" "SUCCESS"
     }
     else {
-        # Build HTML body from note objects for aggregated pages with multiple notes
-        $bodyFragments = $notes | ForEach-Object {
-            "<h3>$($_.title)</h3><p>$($_.content)</p>"
-        }
-        $body = $bodyFragments -join "`n"
-        
-        $html = @"
-<!DOCTYPE html>
-<html>
-<head>
-    <title>$pageTitle</title>
-    <meta name="created" content="$(Get-Date -Format o)"/>
-</head>
-<body>
-$body
-</body>
-</html>
-"@
-        Post-Page -SectionId $secId -Html $html
-        
-        # Enhanced logging for aggregated pages
-        $count = $notes.Count
-        Write-Log "  + Aggregated page: '$pageTitle' with $count notes" "SUCCESS"
+        Create-OneNotePageWithTinyNotes -SectionId $secId -PageTitle $pageTitle -Notes $notes
     }
 }
 
