@@ -246,6 +246,9 @@ Function Create-OneNotePage {
         [array]$Tags
     )
     
+    # Get formatted tag string for display
+    $tagList = Get-SortedTagString -Tags $Tags
+    
     $html = @"
 <!DOCTYPE html>
 <html>
@@ -254,9 +257,10 @@ Function Create-OneNotePage {
     <meta name="created" content="$Created"/>
 </head>
 <body>
+<p>Tags: $tagList</p>
 $(if ($Content -is [bool]) {
     $checkbox = if ($Content) { "☑" } else { "☐" }
-    "<h3>$checkbox&nbsp;$Title</h3>"
+    "<p>$checkbox&nbsp;$Title</p>"
 } else {
     $Content
 })
@@ -307,6 +311,20 @@ $body
     # Enhanced logging for aggregated pages
     $count = $Notes.Count
     Write-Log "  + Aggregated page: '$PageTitle' with $count notes" "SUCCESS"
+}
+
+Function Get-SortedTagString {
+    param ([array]$Tags)
+    
+    # Sort tags alphabetically for consistent grouping
+    $sortedTags = $Tags | Sort-Object
+    
+    # Create tag string for the page title
+    if ($sortedTags.Count -gt 0) { 
+        return $sortedTags -join ", " 
+    } else { 
+        return "untagged" 
+    }
 }
 
 # Function to validate the import map structure
@@ -541,15 +559,8 @@ foreach ($n in $json) {
     $noteLen = $content.Length
 
     if ($noteLen -lt $TinyNoteThreshold) {
-        # Sort tags alphabetically for consistent grouping
-        $sortedTags = $tags | Sort-Object
-        
         # Create tag string for the page title
-        $tagString = if ($sortedTags.Count -gt 0) { 
-            $sortedTags -join ", " 
-        } else { 
-            "untagged" 
-        }
+        $tagString = Get-SortedTagString -Tags $tags
         
         # Create a descriptive page title including section name and tags
         $pageTitle = "Small notes - $sectionName - $tagString"
