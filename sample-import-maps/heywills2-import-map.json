@@ -1,0 +1,361 @@
+[
+  {
+    "OneNoteSectionGroupName": "Bookmarks & Reading List",
+    "OneNoteSections": [
+      {
+        "OneNoteSectionName": "General Bookmarks",
+        "ThinkeryTags": [
+          "type_bookmark"
+        ]
+      },
+      {
+        "OneNoteSectionName": "Articles to Read",
+        "ThinkeryTags": [
+          "read_later",
+          "unread"
+        ]
+      },
+      {
+        "OneNoteSectionName": "Reference Sites",
+        "ThinkeryTags": [
+          "ref_sites_folder",
+          "links"
+        ]
+      }
+    ]
+  },
+  {
+    "OneNoteSectionGroupName": "Ideas & Writing",
+    "OneNoteSections": [
+      {
+        "OneNoteSectionName": "General Notes",
+        "ThinkeryTags": [
+          "type_note"
+        ]
+      },
+      {
+        "OneNoteSectionName": "Leadership Ideas",
+        "ThinkeryTags": [
+          "leadership_ideas_folder"
+        ]
+      },
+      {
+        "OneNoteSectionName": "Writing Projects",
+        "ThinkeryTags": [
+          "writing_projects_folder"
+        ]
+      },
+      {
+        "OneNoteSectionName": "Writing Projects",
+        "ThinkeryTags": [
+          "writing",
+          "writing_ideas",
+          "writing_folder"
+        ]
+      }
+    ]
+  },
+  {
+    "OneNoteSectionGroupName": "Entertainment",
+    "OneNoteSections": [
+      {
+        "OneNoteSectionName": "Movies & Shows",
+        "ThinkeryTags": [
+          "movies_to_watch",
+          "movie"
+        ]
+      },
+      {
+        "OneNoteSectionName": "Music",
+        "ThinkeryTags": [
+          "music!_folder"
+        ]
+      }
+    ]
+  },
+  {
+    "OneNoteSectionGroupName": "Technology & Development",
+    "OneNoteSections": [
+      {
+        "OneNoteSectionName": "Programming & Tools",
+        "ThinkeryTags": [
+          "technology_folder",
+          "dev_tools",
+          "dev_folder",
+          "libraries"
+        ]
+      },
+      {
+        "OneNoteSectionName": "Web Development",
+        "ThinkeryTags": [
+          "css",
+          "html",
+          "javascript",
+          "webdev"
+        ]
+      },
+      {
+        "OneNoteSectionName": "Microsoft Stack",
+        "ThinkeryTags": [
+          "sharepoint",
+          "office365",
+          "csharp",
+          "dotnet"
+        ]
+      },
+      {
+        "OneNoteSectionName": "Code snippets",
+        "ThinkeryTags": [
+          "snippets"
+        ]
+      }
+    ]
+  },
+  {
+    "OneNoteSectionGroupName": "Mobile & Android",
+    "OneNoteSections": [
+      {
+        "OneNoteSectionName": "Android ROMs & Tips",
+        "ThinkeryTags": [
+          "android",
+          "roms",
+          "htc",
+          "xda",
+          "sdcard"
+        ]
+      }
+    ]
+  },
+  {
+    "OneNoteSectionGroupName": "Work & Projects",
+    "OneNoteSections": [
+      {
+        "OneNoteSectionName": "BlueModus & Client Work",
+        "ThinkeryTags": [
+          "bluemodus",
+          "project_folder",
+          "client_x"
+        ]
+      },
+      {
+        "OneNoteSectionName": "Meeting Notes",
+        "ThinkeryTags": [
+          "meetings",
+          "agenda",
+          "minutes"
+        ]
+      }
+    ]
+  },
+  {
+    "OneNoteSectionGroupName": "Personal & Life",
+    "OneNoteSections": [
+      {
+        "OneNoteSectionName": "Family",
+        "ThinkeryTags": [
+          "amy",
+          "kyle",
+          "family_folder"
+        ]
+      },
+      {
+        "OneNoteSectionName": "Home & Tasks",
+        "ThinkeryTags": [
+          "home_folder",
+          "chores",
+          "todo",
+          "wish_list_folder"
+        ]
+      }
+    ]
+  },
+  {
+    "OneNoteSectionGroupName": "Gift Ideas & Shopping",
+    "OneNoteSections": [
+      {
+        "OneNoteSectionName": "Gifts for Others",
+        "ThinkeryTags": [
+          "gift_ideas_folder",
+          "gift_for_mom",
+          "gift_for_dad",
+          "gift_for_amy"
+        ]
+      },
+      {
+        "OneNoteSectionName": "My Wish List",
+        "ThinkeryTags": [
+          "me",
+          "from_tiriansdoor",
+          "wish_list_folder"
+        ]
+      }
+    ]
+  },
+  {
+    "OneNoteSectionGroupName": "People",
+    "OneNoteSections": [
+      {
+        "OneNoteSectionName": "Friends & Acquaintances",
+        "ThinkeryTags": [
+          "acquaintances",
+          "brett"
+        ]
+      }
+    ]
+  },
+  {
+    "OneNoteSectionGroupName": "Outdoors & Camping",
+    "OneNoteSections": [
+      {
+        "OneNoteSectionName": "Hiking & Camping",
+        "ThinkeryTags": [
+          "backpacking",
+          "camping",
+          "outdoors_folder"
+        ]
+      },
+      {
+        "OneNoteSectionName": "Hunting",
+        "ThinkeryTags": [
+          "hunting_spot",
+          "hunting",
+          "outdoors_folder"
+        ]
+      },
+      {
+        "OneNoteSectionName": "Fishing",
+        "ThinkeryTags": [
+          "fishing_spot",
+          "fishing",
+          "outdoors_folder"
+        ]
+      },
+      {
+        "OneNoteSectionName": "Paddling",
+        "ThinkeryTags": [
+          "paddling",
+          "outdoors_folder"
+        ]
+      }
+    ]
+  },
+  {
+    "OneNoteSectionGroupName": "Career & Development",
+    "OneNoteSections": [
+      {
+        "OneNoteSectionName": "Career Planning",
+        "ThinkeryTags": [
+          "career",
+          "career_folder"
+        ]
+      }
+    ]
+  },
+  {
+    "OneNoteSectionGroupName": "Books & Projects",
+    "OneNoteSections": [
+      {
+        "OneNoteSectionName": "Shared Reading Projects",
+        "ThinkeryTags": [
+          "amy's_and_mike's_book_folder"
+        ]
+      }
+    ]
+  },
+  {
+    "OneNoteSectionGroupName": "Food & Drink",
+    "OneNoteSections": [
+      {
+        "OneNoteSectionName": "Beer Journal",
+        "ThinkeryTags": [
+          "2.0_stars",
+          "3.0_stars",
+          "3.5",
+          "4.0_stars",
+          "4.25",
+          "4.5",
+          "5.0_stars",
+          "beers_folder"
+        ]
+      },
+      {
+        "OneNoteSectionName": "Cooking",
+        "ThinkeryTags": [
+          "cooking",
+          "turkey"
+        ]
+      }
+    ]
+  },
+  {
+    "OneNoteSectionGroupName": "Faith & Apologetics",
+    "OneNoteSections": [
+      {
+        "OneNoteSectionName": "Support",
+        "ThinkeryTags": [
+          "support"
+        ]
+      },
+      {
+        "OneNoteSectionName": "Faith & Bible",
+        "ThinkeryTags": [
+          "bible",
+          "devotion",
+          "faith_folder",
+          "apologetics"
+        ]
+      }
+    ]
+  },
+  {
+    "OneNoteSectionGroupName": "Miscellaneous",
+    "OneNoteSections": [
+      {
+        "OneNoteSectionName": "General",
+        "ThinkeryTags": [
+          "misc_notes_folder"
+        ]
+      },
+      {
+        "OneNoteSectionName": "Scratch",
+        "ThinkeryTags": [
+          "scratch_folder"
+        ]
+      }
+    ]
+  },
+  {
+    "OneNoteSectionGroupName": "Books & Reading",
+    "OneNoteSections": [
+      {
+        "OneNoteSectionName": "Books by Louis L'Amour",
+        "ThinkeryTags": [
+          "louis_lamour",
+          "type_book"
+        ]
+      },
+      {
+        "OneNoteSectionName": "Read Books",
+        "ThinkeryTags": [
+          "read_book",
+          "books",
+          "type_book"
+        ]
+      },
+      {
+        "OneNoteSectionName": "Books for Education",
+        "ThinkeryTags": [
+          "kid's_education_folder",
+          "type_book"
+        ]
+      },
+      {
+        "OneNoteSectionName": "Quotes",
+        "ThinkeryTags": [
+          "quotes",
+          "sherlock_holmes"
+        ]
+      }
+    ]
+  }
+]
