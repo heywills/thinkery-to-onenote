@@ -553,14 +553,25 @@ foreach ($k in $agg.Keys) {
     $parts = $k -split '\|'
     $secId = $parts[0]
     $pageTitle = $agg[$k].title
+    $notes = $agg[$k].notes
     
-    # Build HTML body from note objects instead of fragments
-    $bodyFragments = $agg[$k].notes | ForEach-Object {
-        "<h3>$($_.title)</h3><p>$($_.content)</p>"
+    # If there's only one note in this group, create it as a regular page instead of aggregating
+    if ($notes.Count -eq 1) {
+        $note = $notes[0]
+        Create-OneNotePage -SectionId $secId -Title $note.title -Content $note.content -Created $note.created `
+                         -GroupName $note.groupName -SectionName $note.sectionName -Tags $note.tags
+        
+        # Update the logging message to indicate this was handled as a single page
+        Write-Log "  + Small note promoted to full page: '$($note.title)'" "SUCCESS"
     }
-    $body = $bodyFragments -join "`n"
-    
-    $html = @"
+    else {
+        # Build HTML body from note objects for aggregated pages with multiple notes
+        $bodyFragments = $notes | ForEach-Object {
+            "<h3>$($_.title)</h3><p>$($_.content)</p>"
+        }
+        $body = $bodyFragments -join "`n"
+        
+        $html = @"
 <!DOCTYPE html>
 <html>
 <head>
@@ -572,11 +583,12 @@ $body
 </body>
 </html>
 "@
-    Post-Page -SectionId $secId -Html $html
-    
-    # Enhanced logging for aggregated pages
-    $count = ($agg[$k].notes.Count)
-    Write-Log "  + Aggregated page: '$pageTitle' with $count notes" "SUCCESS"
+        Post-Page -SectionId $secId -Html $html
+        
+        # Enhanced logging for aggregated pages
+        $count = $notes.Count
+        Write-Log "  + Aggregated page: '$pageTitle' with $count notes" "SUCCESS"
+    }
 }
 
 Write-Log "`nImport summary:" "SUCCESS"
