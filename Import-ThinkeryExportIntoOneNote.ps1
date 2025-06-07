@@ -519,12 +519,21 @@ foreach ($n in $json) {
         if (!$agg.ContainsKey($key)) { 
             $agg[$key] = @{
                 "title" = $pageTitle
-                "fragments" = @()
+                "sectionId" = $secId
+                "notes" = @()
             }
         }
         
-        # Add this note to the appropriate aggregation group
-        $agg[$key].fragments += "<h3>$title</h3><p>$content</p>"
+        # Add this note as a complete object to the appropriate aggregation group
+        $agg[$key].notes += @{
+            "title" = $title
+            "content" = $content
+            "created" = $created
+            "groupName" = $groupName
+            "sectionName" = $sectionName
+            "tags" = $tags
+            "noteLen" = $noteLen
+        }
         
         # Log the small note being aggregated
         $tagsString = if ($tags.Count -gt 0) { "'$($tags -join "', '")'" } else { "(no tags)" }
@@ -544,7 +553,13 @@ foreach ($k in $agg.Keys) {
     $parts = $k -split '\|'
     $secId = $parts[0]
     $pageTitle = $agg[$k].title
-    $body = ($agg[$k].fragments -join "`n")
+    
+    # Build HTML body from note objects instead of fragments
+    $bodyFragments = $agg[$k].notes | ForEach-Object {
+        "<h3>$($_.title)</h3><p>$($_.content)</p>"
+    }
+    $body = $bodyFragments -join "`n"
+    
     $html = @"
 <!DOCTYPE html>
 <html>
@@ -560,7 +575,7 @@ $body
     Post-Page -SectionId $secId -Html $html
     
     # Enhanced logging for aggregated pages
-    $count = ($agg[$k].fragments.Count)
+    $count = ($agg[$k].notes.Count)
     Write-Log "  + Aggregated page: '$pageTitle' with $count notes" "SUCCESS"
 }
 
