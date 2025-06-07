@@ -243,7 +243,8 @@ Function Create-OneNotePage {
         [DateTime]$Created,
         [string]$GroupName,
         [string]$SectionName,
-        [array]$Tags
+        [array]$Tags,
+        [object]$Url = $null
     )
     
     $tagList = Get-SortedTagString -Tags $Tags
@@ -257,6 +258,7 @@ Function Create-OneNotePage {
 </head>
 <body>
 <p>Created: $($Created.ToLocalTime().ToString("g"))</p>
+$(Format-UrlLink -Url $Url)
 <p>Tags: $tagList</p>
 $(if ($Content -is [bool]) {
     $checkbox = if ($Content) { "☑" } else { "☐" }
@@ -286,12 +288,13 @@ Function Create-OneNotePageWithTinyNotes {
     # Build HTML body from note objects for aggregated pages with multiple notes
     $bodyFragments = $Notes | ForEach-Object {
         $createdDisplay = $_.created.ToLocalTime().ToString("g")
+        $urlHtml = Format-UrlLink -Url $_.url
         
         if ($_.content -is [bool]) {
             $checkbox = if ($_.content) { "☑" } else { "☐" }
-            "<h3>$checkbox&nbsp;$($_.title)</h3><p class='note-date'>Created: $createdDisplay</p>"
+            "<h3>$checkbox&nbsp;$($_.title)</h3><p class='note-date'>Created: $createdDisplay</p>$urlHtml"
         } else {
-            "<h3>$($_.title)</h3><p class='note-date'>Created: $createdDisplay</p><p>$($_.content)</p>"
+            "<h3>$($_.title)</h3><p class='note-date'>Created: $createdDisplay</p>$urlHtml<p>$($_.content)</p>"
         }
     }
     $body = $bodyFragments -join "`n"
@@ -321,6 +324,15 @@ $body
     # Enhanced logging for aggregated pages
     $count = $Notes.Count
     Write-Log "  + Aggregated page: '$PageTitle' with $count notes" "SUCCESS"
+}
+
+Function Format-UrlLink {
+    param([object]$Url)
+    
+    if ($Url -and $Url -isnot [bool] -and ![string]::IsNullOrEmpty($Url)) {
+        return "<p><a href=`"$Url`">$Url</a></p>"
+    }
+    return ""
 }
 
 Function Get-SortedTagString {
@@ -567,6 +579,7 @@ foreach ($n in $json) {
     $title   = $n.title
     $content = $n.html
     $noteLen = $content.Length
+    $url     = $n.url
 
     if ($noteLen -lt $TinyNoteThreshold) {
         # Create tag string for the page title
@@ -595,6 +608,7 @@ foreach ($n in $json) {
             "groupName" = $groupName
             "sectionName" = $sectionName
             "tags" = $tags
+            "url" = $url
             "noteLen" = $noteLen
         }
         
@@ -604,7 +618,7 @@ foreach ($n in $json) {
         $smallNoteCount++
     } else {
         Create-OneNotePage -SectionId $secId -Title $title -Content $content -Created $created `
-                          -GroupName $groupName -SectionName $sectionName -Tags $tags
+                          -GroupName $groupName -SectionName $sectionName -Tags $tags -Url $url
         $largeNoteCount++
     }
 }
@@ -622,7 +636,7 @@ foreach ($k in $agg.Keys) {
     if ($notes.Count -eq 1) {
         $note = $notes[0]
         Create-OneNotePage -SectionId $secId -Title $note.title -Content $note.content -Created $note.created `
-                         -GroupName $note.groupName -SectionName $note.sectionName -Tags $note.tags
+                         -GroupName $note.groupName -SectionName $note.sectionName -Tags $note.tags -Url $note.url
         
         # Update the logging message to indicate this was handled as a single page
         Write-Log "  + Small note promoted to full page: '$($note.title)'" "SUCCESS"
