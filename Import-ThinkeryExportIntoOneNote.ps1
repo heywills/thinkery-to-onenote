@@ -240,13 +240,14 @@ Function Is-Checkbox {
     return $Content -is [bool]
 }
 
-Function Format-Checkbox {
+Function Get-TodoTagAttribute {
     param([bool]$IsChecked)
     
-    if ($IsChecked) { 
-        return "☑" 
-    } else { 
-        return "☐" 
+    # Return the appropriate data-tag attribute for OneNote ToDo items
+    if ($IsChecked) {
+        return 'data-tag="todo:completed"'
+    } else {
+        return 'data-tag="to-do"'
     }
 }
 
@@ -276,8 +277,8 @@ Function Create-OneNotePage {
 $(Format-UrlLink -Url $Url)
 <p>Tags: $tagList</p>
 $(if (Is-Checkbox -Content $Content) {
-    $checkbox = Format-Checkbox -IsChecked $Content
-    "<p>$checkbox&nbsp;$Title</p>"
+    $todoAttr = Get-TodoTagAttribute -IsChecked $Content
+    "<p $todoAttr>$Title</p>"
 } else {
     $Content
 })
@@ -306,8 +307,8 @@ Function Create-OneNotePageWithTinyNotes {
         $urlHtml = Format-UrlLink -Url $_.url
         
         if (Is-Checkbox -Content $_.content) {
-            $checkbox = Format-Checkbox -IsChecked $_.content
-            "<h3>$checkbox&nbsp;$($_.title)</h3><p class='note-date'>Created: $createdDisplay</p>$urlHtml"
+            $todoAttr = Get-TodoTagAttribute -IsChecked $_.content
+            "<h3 $todoAttr>$($_.title)</h3><p class='note-date'>Created: $createdDisplay</p>$urlHtml"
         } else {
             "<h3>$($_.title)</h3><p class='note-date'>Created: $createdDisplay</p>$urlHtml<p>$($_.content)</p>"
         }
