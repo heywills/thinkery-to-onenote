@@ -166,33 +166,64 @@ Function Invoke-RestMethodPrivate {
         [object]$Body,
         [string]$ContentType = "application/json"
     )
+    Write-Debug "Sending $Method request to $Uri"
+    
+    if ($DryRun) {
+        Write-Log "[DRY RUN] Would send $Method request to $Uri" "INFO"
+        if ($Method -eq "Post" -and $ContentType -eq "application/json") {
+            return [PSCustomObject]@{ id = "dry-run-id-$(Get-Random)" }
+        }
+        return $null
+    }
     
     try {
-        # For debugging
-        Write-Debug "Sending $Method request to $Uri"
+        $maxRetries = 5
+        $retryCount = 0
+        $waitTime = 5
+        $shouldRetry = $true
         
-        if ($DryRun) {
-            Write-Log "[DRY RUN] Would send $Method request to $Uri" "INFO"
-            if ($Method -eq "Post" -and $ContentType -eq "application/json") {
-                return [PSCustomObject]@{ id = "dry-run-id-$(Get-Random)" }
+        while ($shouldRetry) {
+            try {
+                Write-Log "Sending $Method request to $Uri" "INFO"
+                $headers = @{ 
+                    "Authorization" = "Bearer $AccessToken"
+                    "Content-Type" = $ContentType
+                }
+                
+                $response = Invoke-RestMethod -Method $Method -Uri $Uri -Headers $headers -Body $Body -ErrorVariable responseError
+                $shouldRetry = $false
+                return $response
+            } 
+            catch {
+                $retryCount++
+                if ($retryCount -le $maxRetries) {
+                    Write-Log "API Error (Attempt $retryCount of $maxRetries): $_" "WARNING"
+                    Write-Log "Waiting $waitTime seconds before retrying..." "WARNING"
+                    Start-Sleep -Seconds $waitTime
+                    $waitTime = $waitTime * 2  # Double the wait time for next retry
+                } 
+                else {
+                    $userChoice = Read-Host "Failed after $maxRetries attempts. Do you want to retry again? (y/n)"
+                    if ($userChoice -eq "y" -or $userChoice -eq "yes") {
+                        Write-Log "User chose to retry the operation." "INFO"
+                        $retryCount = 0
+                        $waitTime = 5
+                    } 
+                    else {
+                        $shouldRetry = $false
+                        Write-Log "API Error: $_" "ERROR"
+                        if ($ContentType -eq "application/json" -and $Body) {
+                            $json = if ($Body -is [string]) { $Body } else { $Body | ConvertTo-Json -Depth 6 }
+                            Write-Log "Request body: $json" "ERROR"
+                        }
+                        throw $_
+                    }
+                }
             }
-            return $null
         }
-        
-        Write-Log "Sending $Method request to $Uri" "INFO"
-        $headers = @{ 
-            "Authorization" = "Bearer $AccessToken"
-            "Content-Type" = $ContentType
-        }
-        
-        $response = Invoke-RestMethod -Method $Method -Uri $Uri -Headers $headers -Body $Body -ErrorVariable responseError
-        return $response
-    } catch {
-        Write-Log "API Error: $_" "ERROR"
-        if ($ContentType -eq "application/json" -and $Body) {
-            $json = if ($Body -is [string]) { $Body } else { $Body | ConvertTo-Json -Depth 6 }
-            Write-Log "Request body: $json" "ERROR"
-        }
+    } 
+    catch {
+        # This will catch any exceptions that were re-thrown after all retries
         throw $_
     }
 }
