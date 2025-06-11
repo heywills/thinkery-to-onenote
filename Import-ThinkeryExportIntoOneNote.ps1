@@ -235,6 +235,21 @@ Function Post-Page {
     }
 }
 
+Function Is-Checkbox {
+    param([object]$Content)
+    return $Content -is [bool]
+}
+
+Function Format-Checkbox {
+    param([bool]$IsChecked)
+    
+    if ($IsChecked) { 
+        return "☑" 
+    } else { 
+        return "☐" 
+    }
+}
+
 Function Create-OneNotePage {
     param(
         [string]$SectionId,
@@ -260,8 +275,8 @@ Function Create-OneNotePage {
 <p>Created: $($Created.ToLocalTime().ToString("g"))</p>
 $(Format-UrlLink -Url $Url)
 <p>Tags: $tagList</p>
-$(if ($Content -is [bool]) {
-    $checkbox = if ($Content) { "☑" } else { "☐" }
+$(if (Is-Checkbox -Content $Content) {
+    $checkbox = Format-Checkbox -IsChecked $Content
     "<p>$checkbox&nbsp;$Title</p>"
 } else {
     $Content
@@ -290,8 +305,8 @@ Function Create-OneNotePageWithTinyNotes {
         $createdDisplay = $_.created.ToLocalTime().ToString("g")
         $urlHtml = Format-UrlLink -Url $_.url
         
-        if ($_.content -is [bool]) {
-            $checkbox = if ($_.content) { "☑" } else { "☐" }
+        if (Is-Checkbox -Content $_.content) {
+            $checkbox = Format-Checkbox -IsChecked $_.content
             "<h3>$checkbox&nbsp;$($_.title)</h3><p class='note-date'>Created: $createdDisplay</p>$urlHtml"
         } else {
             "<h3>$($_.title)</h3><p class='note-date'>Created: $createdDisplay</p>$urlHtml<p>$($_.content)</p>"
