@@ -156,23 +156,43 @@ if ($DryRun) {
 
 Function Invoke-GraphPost($Uri, $BodyObj) {
     $json = $BodyObj | ConvertTo-Json -Depth 6
+    return Invoke-RestMethodPrivate -Method "Post" -Uri $Uri -Body $json -ContentType "application/json"
+}
+
+Function Invoke-RestMethodPrivate {
+    param(
+        [string]$Method,
+        [string]$Uri,
+        [object]$Body,
+        [string]$ContentType = "application/json"
+    )
+    
     try {
         # For debugging
-        Write-Debug "Sending request to $Uri with body: $json"
+        Write-Debug "Sending $Method request to $Uri"
         
         if ($DryRun) {
-            Write-Log "[DRY RUN] Would send request to $Uri" "INFO"
-            return [PSCustomObject]@{ id = "dry-run-id-$(Get-Random)" }
+            Write-Log "[DRY RUN] Would send $Method request to $Uri" "INFO"
+            if ($Method -eq "Post" -and $ContentType -eq "application/json") {
+                return [PSCustomObject]@{ id = "dry-run-id-$(Get-Random)" }
+            }
+            return $null
         }
         
-        Write-Log "Sending request to $Uri" "INFO"
-        $response = Invoke-RestMethod -Method Post -Uri $Uri `
-            -Headers @{ Authorization = "Bearer $AccessToken"; "Content-Type" = "application/json" } `
-            -Body $json -ErrorVariable responseError
+        Write-Log "Sending $Method request to $Uri" "INFO"
+        $headers = @{ 
+            "Authorization" = "Bearer $AccessToken"
+            "Content-Type" = $ContentType
+        }
+        
+        $response = Invoke-RestMethod -Method $Method -Uri $Uri -Headers $headers -Body $Body -ErrorVariable responseError
         return $response
     } catch {
-        Write-Log "Graph API Error: $_" "ERROR"
-        Write-Log "Request body: $json" "ERROR"
+        Write-Log "API Error: $_" "ERROR"
+        if ($ContentType -eq "application/json" -and $Body) {
+            $json = if ($Body -is [string]) { $Body } else { $Body | ConvertTo-Json -Depth 6 }
+            Write-Log "Request body: $json" "ERROR"
+        }
         throw $_
     }
 }
@@ -214,25 +234,9 @@ Function Create-Section {
 
 Function Post-Page {
     param([string]$SectionId, [string]$Html)
-    try {
-        if ($DryRun) {
-            Write-Log "[DRY RUN] Would post page to section $SectionId" "INFO"
-            return
-        }
-        
-        # Send the HTML content directly in the request body
-        Write-Log "Posting page to section $SectionId" "INFO"
-        $ret = Invoke-RestMethod -Method Post -Uri "$graphApi/me/onenote/sections/$SectionId/pages" `
-            -Headers @{ 
-                "Authorization" = "Bearer $AccessToken"
-                "Content-Type" = "text/html; charset=utf-8"
-            } `
-            -Body $Html
-    }
-    catch {
-        Write-Log "Error posting page: $_" "ERROR"
-        Break
-    }
+    
+    $uri = "$graphApi/me/onenote/sections/$SectionId/pages"
+    return Invoke-RestMethodPrivate -Method "Post" -Uri $uri -Body $Html -ContentType "text/html; charset=utf-8"
 }
 
 Function Is-Checkbox {
@@ -285,7 +289,7 @@ $(if (Is-Checkbox -Content $Content) {
 </body>
 </html>
 "@
-    Post-Page -SectionId $SectionId -Html $html
+    Post-Page -SectionId $SectionId -Html $html | Out-Null
     
     # Enhanced logging with full details
     $tagsString = if ($Tags.Count -gt 0) { "'$($Tags -join "', '")'" } else { "(no tags)" }
@@ -335,7 +339,7 @@ $body
 </body>
 </html>
 "@
-    Post-Page -SectionId $SectionId -Html $html
+    Post-Page -SectionId $SectionId -Html $html | Out-Null
     
     # Enhanced logging for aggregated pages
     $count = $Notes.Count
@@ -634,7 +638,7 @@ foreach ($n in $json) {
         $smallNoteCount++
     } else {
         Create-OneNotePage -SectionId $secId -Title $title -Content $content -Created $created `
-                          -GroupName $groupName -SectionName $sectionName -Tags $tags -Url $url
+                          -GroupName $groupName -SectionName $sectionName -Tags $tags -Url $url | Out-Null
         $largeNoteCount++
     }
 }
@@ -652,7 +656,7 @@ foreach ($k in $agg.Keys) {
     if ($notes.Count -eq 1) {
         $note = $notes[0]
         Create-OneNotePage -SectionId $secId -Title $note.title -Content $note.content -Created $note.created `
-                         -GroupName $note.groupName -SectionName $note.sectionName -Tags $note.tags -Url $note.url
+                         -GroupName $note.groupName -SectionName $note.sectionName -Tags $note.tags -Url $note.url | Out-Null
         
         # Update the logging message to indicate this was handled as a single page
         Write-Log "  + Small note promoted to full page: '$($note.title)'" "SUCCESS"
