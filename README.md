@@ -16,7 +16,7 @@ The `Import-ThinkeryExportIntoOneNote.ps1` script helps you migrate your notes f
 
 ### Prerequisites
 
-- PowerShell 5.1 or higher
+- PowerShell 7.1 or higher
 - A Microsoft account with access to OneNote
 - A JSON export of your Thinkery notes
 
@@ -28,13 +28,15 @@ The `Import-ThinkeryExportIntoOneNote.ps1` script helps you migrate your notes f
 
 ### Step 2: Create Your Import Mapping Configuration
 
-1. Create or customize an import map JSON file based on the structure below
+1. Create an import map JSON file based on the structure below. Consider using ChatGPT to help you create the mapping configuration. A sample prompt is provided at the end of this readme.
 2. Save your import map in the `sample-import-maps` folder or another location
 3. Make note of the exact path to use with the `-ImportMapPath` parameter
 
 ### Step 3: Run the Script
 
-The script uses interactive authentication to connect to Microsoft Graph API:
+The script uses interactive authentication to connect to Microsoft Graph API.
+
+Make sure you run the script in PowerShell 7 (`pwsh.exe`) not PowerShell 5.1 (`powershell.exe`).
 
 ```powershell
 .\Import-ThinkeryExportIntoOneNote.ps1 `
@@ -123,3 +125,101 @@ If you encounter issues:
 3. If authentication fails, restart your application and try again
 4. Verify your import map file has the correct structure
 5. Make sure your Thinkery export JSON is valid
+
+## Sample ChatGPT prompt for creating a mapping file
+
+I'm using an import script that maps tagged notes from a legacy note taking application to OneNote section groups, and sections.
+
+The tool requires a json config file that defines the OneNote section groups and sections to create, and it requires mapping the sections to the tags from the legacy note taking app.
+
+Here is a sample of the format of the json config file:
+
+```json
+[
+  {
+    "OneNoteSectionGroupName": "Section group 1",
+    "OneNoteSections": [
+      {
+        "OneNoteSectionName": "Section 1a",
+        "ThinkeryTags": ["legacy_tag_1", "legacy_tag_2", "legacy_tag_3"]  
+      },
+      {
+        "OneNoteSectionName": "Section 1b",
+        "ThinkeryTags": ["legacy_tag_4", "legacy_tag_5"]  
+      }
+    ]
+  },
+  {
+    "OneNoteSectionGroupName": "Section group 2",
+    "OneNoteSections": [
+      {
+        "OneNoteSectionName": "Section 2a",
+        "ThinkeryTags": ["legacy_tag_6", "legacy_tag_7"]  
+      },
+      {
+        "OneNoteSectionName": "Section 2b",
+        "ThinkeryTags": ["legacy_tag_8", "legacy_tag_9"]  
+      }
+    ]
+  }
+]
+```
+
+Will you analyze the the JSON export, "thinkery-mikewills.json", from the legacy note application?
+
+Please do the following:
+
+- Recommend the hierarchy of OneNote section groups and sections to organize all the content in the attached JSON file, base the recommendations based on the tags and tag combinations.
+- Please recognize that tags in the legacy JSON file are space-delimited and can have underscores (_) in their tag names.
+- Please do a semantic analysis of the tag names to discovery their meaning and intent and try to create section groups and section names with semantic meaning? You may have to examine the note titles assigned to the tags to discovery meaning.
+- Assign all the tags in the attached JSON file to one of the sections. You can combine multiple tags in one section if they are used together frequently.
+- Create a configuration file in the above format that defines the recommended section groups, sections, and tag assignments.
+
+Here's a starting point of the section group and section hierarchy reflecting section groups and sections that I know I want, but I'll need you to add more:
+
+- Bible
+  - Memory Verses
+  - Study Notes
+- Homeschool
+  - Task Lists
+  - Courses & Resources
+- Gift Ideas
+  - Amy
+  - Jessica
+  - Joseph
+  - General
+- Wish Lists
+  - Mike
+- Health
+  - Family Health
+  - Personal Trackers
+- Home
+  - Maintenance Log
+  - Contractors & Quotes
+- Outdoor & Gear
+  - Gear Lists
+  - Trip Planning
+- Pets
+  - Health History
+  - Food & Supplies
+- Hunting & Shooting
+  - Turkey Tips
+  - Deer & Elk
+  - Equipment
+- Places
+  - Aeneas Valley
+- Technology
+  - Kentico
+  - SharePoint
+  - Code snippets
+- Misc Notes
+  - Tech Snippets
+  - Quotes
+  - Inbox
+- Reading and literature
+  - Series
+  - Quotes
+- Blog - Writing Ideas
+  - CMS Ideas
+  - App Ideas
+  - Other Drafts
