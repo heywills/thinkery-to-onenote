@@ -176,9 +176,9 @@ Function Invoke-RestMethodPrivate {
     }
     
     try {
-        $maxRetries = 5
+        $maxRetries = 24
         $retryCount = 0
-        $waitTime = 5
+        $waitTime = 10
         $shouldRetry = $true
         
         while ($shouldRetry) {
