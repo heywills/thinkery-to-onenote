@@ -53,7 +53,6 @@ param(
     [switch]$DryRun = $false
 )
 
-$ErrorActionPreference = "Break"
 $graphApi = "https://graph.microsoft.com/v1.0"
 
 # Setup logging
@@ -149,9 +148,9 @@ Function Get-InteractiveAccessToken {
 # Get access token if not in dry run mode
 if ($DryRun) {
     Write-Log "Dry run mode - skipping authentication" "INFO"
-    $AccessToken = "dry-run-token"
+    $global:AccessToken = "dry-run-token"
 } else {
-    $AccessToken = Get-InteractiveAccessToken
+    $global:AccessToken = Get-InteractiveAccessToken
 }
 
 Function Invoke-GraphPost($Uri, $BodyObj) {
@@ -195,6 +194,15 @@ Function Invoke-RestMethodPrivate {
                 return $response
             } 
             catch {
+                # Check if this is an authentication token error
+                if ($_.Exception.Response.StatusCode -eq "Unauthorized") {
+                    
+                    Write-Log "Authentication token expired or invalid. Refreshing token..." "WARNING"
+                    $global:AccessToken = Get-InteractiveAccessToken
+                    continue
+                }
+                
+                # For other errors, proceed with normal retry logic
                 $retryCount++
                 if ($retryCount -le $maxRetries) {
                     Write-Log "API Error (Attempt $retryCount of $maxRetries): $_" "WARNING"
