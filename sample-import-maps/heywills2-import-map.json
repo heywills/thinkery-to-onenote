@@ -169,7 +169,6 @@
         "OneNoteSectionName": "My Wish List",
         "ThinkeryTags": [
           "me",
-          "from_tiriansdoor",
           "wish_list_folder"
         ]
       }
@@ -213,7 +212,8 @@
           "guns",
           "firearms",
           "gun_care",
-          "shotguns"
+          "shotguns",
+          "shooting"
         ]
       },
       {
@@ -319,11 +319,18 @@
       {
         "OneNoteSectionName": "Faith & Bible",
         "ThinkeryTags": [
-          "bible",
           "devotion",
           "faith_folder",
           "apologetics",
           "christianity_folder"
+        ]
+      },
+      {
+        "OneNoteSectionName": "Bible verses",
+        "ThinkeryTags": [
+          "bible_folder",
+          "bible",
+          "memory_verse"
         ]
       }
     ]
