@@ -1,36 +1,11 @@
 [
   {
-    "OneNoteSectionGroupName": "Bookmarks & Reading List",
-    "OneNoteSections": [
-      {
-        "OneNoteSectionName": "General Bookmarks",
-        "ThinkeryTags": [
-          "type_bookmark"
-        ]
-      },
-      {
-        "OneNoteSectionName": "Articles to Read",
-        "ThinkeryTags": [
-          "read_later",
-          "unread"
-        ]
-      },
-      {
-        "OneNoteSectionName": "Reference Sites",
-        "ThinkeryTags": [
-          "ref_sites_folder",
-          "links"
-        ]
-      }
-    ]
-  },
-  {
     "OneNoteSectionGroupName": "Ideas & Writing",
     "OneNoteSections": [
       {
         "OneNoteSectionName": "General Notes",
         "ThinkeryTags": [
-          "type_note"
+          "reference"
         ]
       },
       {
@@ -45,7 +20,8 @@
           "writing_projects_folder",
           "writing",
           "writing_ideas",
-          "writing_folder"
+          "writing_folder",
+          "conservative_graffiti_folder"
         ]
       }
     ]
@@ -63,7 +39,35 @@
       {
         "OneNoteSectionName": "Music",
         "ThinkeryTags": [
-          "music!_folder"
+          "music!_folder",
+          "lyrics"
+        ]
+      },
+      {
+        "OneNoteSectionName": "Things to do",
+        "ThinkeryTags": [
+          "things_to_do_folder"
+        ]
+      },
+      {
+        "OneNoteSectionName": "Comics & Manga",
+        "ThinkeryTags": [
+          "comics",
+          "manga"
+        ]
+      },
+      {
+        "OneNoteSectionName": "Jokes",
+        "ThinkeryTags": [
+          "jokes_folder",
+          "jokes"
+        ]
+      },
+      {
+        "OneNoteSectionName": "Anime",
+        "ThinkeryTags": [
+          "anime_folder",
+          "anime"
         ]
       }
     ]
@@ -77,7 +81,8 @@
           "technology_folder",
           "dev_tools",
           "dev_folder",
-          "libraries"
+          "libraries",
+          ".net"
         ]
       },
       {
@@ -101,7 +106,8 @@
       {
         "OneNoteSectionName": "Code snippets",
         "ThinkeryTags": [
-          "snippets"
+          "snippets",
+          "original_technology_folder"
         ]
       }
     ]
@@ -122,27 +128,6 @@
     ]
   },
   {
-    "OneNoteSectionGroupName": "Work & Projects",
-    "OneNoteSections": [
-      {
-        "OneNoteSectionName": "BlueModus & Client Work",
-        "ThinkeryTags": [
-          "bluemodus",
-          "project_folder",
-          "client_x"
-        ]
-      },
-      {
-        "OneNoteSectionName": "Meeting Notes",
-        "ThinkeryTags": [
-          "meetings",
-          "agenda",
-          "minutes"
-        ]
-      }
-    ]
-  },
-  {
     "OneNoteSectionGroupName": "Personal & Life",
     "OneNoteSections": [
       {
@@ -154,12 +139,16 @@
         ]
       },
       {
-        "OneNoteSectionName": "Home & Tasks",
+        "OneNoteSectionName": "Pets",
         "ThinkeryTags": [
-          "home_folder",
-          "chores",
-          "todo",
-          "wish_list_folder"
+          "fleas",
+          "pets"
+        ]
+      },
+      {
+        "OneNoteSectionName": "Compliments",
+        "ThinkeryTags": [
+          "compliments_folder"
         ]
       }
     ]
@@ -192,21 +181,22 @@
       {
         "OneNoteSectionName": "Friends & Acquaintances",
         "ThinkeryTags": [
-          "acquaintances",
-          "brett"
+          "acquaintances"
         ]
       }
     ]
   },
   {
-    "OneNoteSectionGroupName": "Outdoors & Camping",
+    "OneNoteSectionGroupName": "Outdoors & Vacation",
     "OneNoteSections": [
       {
         "OneNoteSectionName": "Hiking & Camping",
         "ThinkeryTags": [
           "backpacking",
           "camping",
-          "outdoors_folder"
+          "outdoors_folder",
+          "outdoor",
+          "hiking"
         ]
       },
       {
@@ -215,6 +205,15 @@
           "hunting_spot",
           "hunting",
           "outdoors_folder"
+        ]
+      },
+      {
+        "OneNoteSectionName": "Shooting",
+        "ThinkeryTags": [
+          "guns",
+          "firearms",
+          "gun_care",
+          "shotguns"
         ]
       },
       {
@@ -229,7 +228,20 @@
         "OneNoteSectionName": "Paddling",
         "ThinkeryTags": [
           "paddling",
-          "outdoors_folder"
+          "outdoors_folder",
+          "outdoors"
+        ]
+      },
+      {
+        "OneNoteSectionName": "Vacation ideas",
+        "ThinkeryTags": [
+          "vacation_folder"
+        ]
+      },
+      {
+        "OneNoteSectionName": "Mapping",
+        "ThinkeryTags": [
+          "mapping"
         ]
       }
     ]
@@ -247,12 +259,25 @@
     ]
   },
   {
-    "OneNoteSectionGroupName": "Books & Projects",
+    "OneNoteSectionGroupName": "Projects",
     "OneNoteSections": [
       {
-        "OneNoteSectionName": "Shared Reading Projects",
+        "OneNoteSectionName": "Shared Projects",
         "ThinkeryTags": [
           "amy's_and_mike's_book_folder"
+        ]
+      },
+      {
+        "OneNoteSectionName": "Crafts",
+        "ThinkeryTags": [
+          "paracord"
+        ]
+      },
+      {
+        "OneNoteSectionName": "Teaching",
+        "ThinkeryTags": [
+          "elementary_class_folder",
+          "elementry_class_folder"
         ]
       }
     ]
@@ -297,7 +322,8 @@
           "bible",
           "devotion",
           "faith_folder",
-          "apologetics"
+          "apologetics",
+          "christianity_folder"
         ]
       }
     ]
@@ -316,6 +342,18 @@
         "ThinkeryTags": [
           "scratch_folder"
         ]
+      },
+      {
+        "OneNoteSectionName": "Redtech",
+        "ThinkeryTags": [
+          "redtech_folder"
+        ]
+      },
+      {
+        "OneNoteSectionName": "Ideas",
+        "ThinkeryTags": [
+          "ideas_folder"
+        ]
       }
     ]
   },
@@ -323,16 +361,18 @@
     "OneNoteSectionGroupName": "Books & Reading",
     "OneNoteSections": [
       {
-        "OneNoteSectionName": "Books by Louis L'Amour",
+        "OneNoteSectionName": "Read books",
         "ThinkeryTags": [
-          "louis_lamour"        ]
+          "read_book"
+       ]
       },
       {
-        "OneNoteSectionName": "Read Books",
+        "OneNoteSectionName": "Books",
         "ThinkeryTags": [
-          "read_book",
           "books",
-          "type_book"
+          "type_book",
+          "literature",
+          "books_folder"
         ]
       },
       {
@@ -346,7 +386,8 @@
         "OneNoteSectionName": "Quotes",
         "ThinkeryTags": [
           "quotes",
-          "sherlock_holmes"
+          "sherlock_holmes",
+          "quotes_folder"
         ]
       }
     ]
