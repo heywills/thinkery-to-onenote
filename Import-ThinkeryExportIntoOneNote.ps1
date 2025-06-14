@@ -53,6 +53,15 @@ param(
     [switch]$DryRun = $false
 )
 
+$useSystemWeb = $true
+try {
+    Add-Type -AssemblyName System.Web -ErrorAction Stop
+} catch {
+    $useSystemWeb = $false
+    Write-Log "System.Web assembly not available, using fallback HTML decoding method" "WARNING"
+}
+
+
 $graphApi = "https://graph.microsoft.com/v1.0"
 
 # Setup logging
@@ -245,6 +254,22 @@ Function Sanitize-Name {
                       -replace "%", "percent" `
                       -replace "/", "-" 
     return $sanitized
+}
+
+Function Get-TextLength {
+    param([string]$HtmlContent)
+    
+    $textContent = $HtmlContent -replace "<[^>]+>", ""
+    $textContent = $textContent -replace "&nbsp;", " "
+    
+    if ($useSystemWeb) {
+        $textContent = [System.Web.HttpUtility]::HtmlDecode($textContent)
+    } else {
+        # Simple fallback for common HTML entities
+        $textContent = $textContent -replace "&amp;", "&" -replace "&lt;", "<" -replace "&gt;", ">" -replace "&quot;", '"'
+    }
+    
+    return $textContent.Length
 }
 
 Function Create-Notebook {
@@ -637,7 +662,7 @@ foreach ($n in $json) {
     $created = [DateTime]::Parse($n.date) 
     $title   = $n.title
     $content = $n.html
-    $noteLen = $content.Length
+    $noteLen = Get-TextLength -HtmlContent $content
     $url     = $n.url
 
     if ($noteLen -lt $TinyNoteThreshold) {
