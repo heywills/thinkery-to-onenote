@@ -50,24 +50,10 @@
         ]
       },
       {
-        "OneNoteSectionName": "Comics & Manga",
-        "ThinkeryTags": [
-          "comics",
-          "manga"
-        ]
-      },
-      {
         "OneNoteSectionName": "Jokes",
         "ThinkeryTags": [
           "jokes_folder",
           "jokes"
-        ]
-      },
-      {
-        "OneNoteSectionName": "Anime",
-        "ThinkeryTags": [
-          "anime_folder",
-          "anime"
         ]
       }
     ]
@@ -82,7 +68,9 @@
           "dev_tools",
           "dev_folder",
           "libraries",
-          ".net"
+          ".net",
+          "csharp",
+          "dotnet"          
         ]
       },
       {
@@ -95,12 +83,10 @@
         ]
       },
       {
-        "OneNoteSectionName": "Microsoft Stack",
+        "OneNoteSectionName": "SharePoint",
         "ThinkeryTags": [
           "sharepoint",
-          "office365",
-          "csharp",
-          "dotnet"
+          "office365"
         ]
       },
       {
@@ -131,14 +117,6 @@
     "OneNoteSectionGroupName": "Personal & Life",
     "OneNoteSections": [
       {
-        "OneNoteSectionName": "Family",
-        "ThinkeryTags": [
-          "amy",
-          "kyle",
-          "family_folder"
-        ]
-      },
-      {
         "OneNoteSectionName": "Pets",
         "ThinkeryTags": [
           "fleas",
@@ -162,7 +140,8 @@
           "gift_ideas_folder",
           "gift_for_mom",
           "gift_for_dad",
-          "gift_for_amy"
+          "gift_for_amy",
+          "amy"
         ]
       },
       {
@@ -195,7 +174,9 @@
           "camping",
           "outdoors_folder",
           "outdoor",
-          "hiking"
+          "outdoors",
+          "hiking",
+          "hikes"
         ]
       },
       {
@@ -203,7 +184,8 @@
         "ThinkeryTags": [
           "hunting_spot",
           "hunting",
-          "outdoors_folder"
+          "outdoors_folder",
+          "hunting_spring_2014_folder"
         ]
       },
       {
@@ -236,12 +218,6 @@
         "OneNoteSectionName": "Vacation ideas",
         "ThinkeryTags": [
           "vacation_folder"
-        ]
-      },
-      {
-        "OneNoteSectionName": "Mapping",
-        "ThinkeryTags": [
-          "mapping"
         ]
       }
     ]
@@ -322,7 +298,8 @@
           "devotion",
           "faith_folder",
           "apologetics",
-          "christianity_folder"
+          "christianity_folder",
+          "prayer_requests_folder"
         ]
       },
       {
@@ -355,12 +332,6 @@
         "ThinkeryTags": [
           "redtech_folder"
         ]
-      },
-      {
-        "OneNoteSectionName": "Ideas",
-        "ThinkeryTags": [
-          "ideas_folder"
-        ]
       }
     ]
   },
@@ -370,7 +341,9 @@
       {
         "OneNoteSectionName": "Read books",
         "ThinkeryTags": [
-          "read_book"
+          "read_book",
+          "literature",
+          "books_folder"
        ]
       },
       {
