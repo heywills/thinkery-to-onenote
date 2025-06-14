@@ -1,0 +1,113 @@
+[
+  {
+    "OneNoteSectionGroupName": "Faith and scripture",
+    "OneNoteSections": [
+      { "OneNoteSectionName": "Study Notes", "ThinkeryTags": ["bible", "christianity", "white_book", "recovery"] },
+      { "OneNoteSectionName": "Memory Verses", "ThinkeryTags": ["memory_verse", "bible"] }
+    ]
+  },
+  {
+    "OneNoteSectionGroupName": "Prayers",
+    "OneNoteSections": [
+      { "OneNoteSectionName": "Prayer Journal", "ThinkeryTags": ["prayer", "prayers_folder"] }
+    ]
+  },
+  {
+    "OneNoteSectionGroupName": "Youth Education",
+    "OneNoteSections": [
+      { "OneNoteSectionName": "General homeschool notes", "ThinkeryTags": ["homeschool_folder"] },
+      { "OneNoteSectionName": "Task Lists", "ThinkeryTags": ["homeschool", "homeschool_folder", "todo"] },
+      { "OneNoteSectionName": "Courses & Resources", "ThinkeryTags": ["courses", "teaching"] }
+    ]
+  },
+  {
+    "OneNoteSectionGroupName": "Gift Ideas",
+    "OneNoteSections": [
+      { "OneNoteSectionName": "Amy", "ThinkeryTags": ["amy"] },
+      { "OneNoteSectionName": "Jessica", "ThinkeryTags": ["jessica"] },
+      { "OneNoteSectionName": "Joseph", "ThinkeryTags": ["joseph"] },
+      { "OneNoteSectionName": "Mike", "ThinkeryTags": ["mike", "wish_list_folder", "wishlist", "gift_ideas_folder"] },
+      { "OneNoteSectionName": "General", "ThinkeryTags": ["gift", "gift_history", "gift_ideas_folder"] }
+    ]
+  },
+  {
+    "OneNoteSectionGroupName": "Health",
+    "OneNoteSections": [
+      { "OneNoteSectionName": "Family Health", "ThinkeryTags": ["family_health", "health"] },
+      { "OneNoteSectionName": "Personal Trackers", "ThinkeryTags": ["personal", "tracker", "exercise", "diet", "medical", "personality", "medical_history", "health_records"] },
+      { "OneNoteSectionName": "Journals", "ThinkeryTags": ["gratitude_list"] }
+    ]
+  },
+  {
+    "OneNoteSectionGroupName": "Home",
+    "OneNoteSections": [
+      { "OneNoteSectionName": "Maintenance", "ThinkeryTags": ["contractor", "contractors", "repair", "septic", "basement", "home"] }
+    ]
+  },
+  {
+    "OneNoteSectionGroupName": "Pets",
+    "OneNoteSections": [
+      { "OneNoteSectionName": "Health History", "ThinkeryTags": ["health_history", "pets", "oliver", "pet"] }
+    ]
+  },
+  {
+    "OneNoteSectionGroupName": "Hunting & Shooting",
+    "OneNoteSections": [
+      { "OneNoteSectionName": "Hunting Tips", "ThinkeryTags": ["hunting", "tips", "wildlife", "mule_deer", "aeneas_valley", "outdoor_folder"] },
+      { "OneNoteSectionName": "Fishing Tips", "ThinkeryTags": ["fishing", "tips", "outdoor_folder", "fish"] },
+      { "OneNoteSectionName": "Equipment", "ThinkeryTags": ["hunting", "guns", "rifle", "rifles", "gunsmith", "bluing-service", "tips", "shooting", "backpacking"] }
+    ]
+  },
+  {
+    "OneNoteSectionGroupName": "Places",
+    "OneNoteSections": [
+      { "OneNoteSectionName": "Aeneas Valley", "ThinkeryTags": ["aeneas_valley"] },
+      { "OneNoteSectionName": "Vacation", "ThinkeryTags": ["vacation", "backpacking", "outdoor"] }
+    ]
+  },
+  {
+    "OneNoteSectionGroupName": "Technology",
+    "OneNoteSections": [
+      { "OneNoteSectionName": "Kentico", "ThinkeryTags": ["kentico"] },
+      { "OneNoteSectionName": "SharePoint", "ThinkeryTags": ["sharepoint"] },
+      { "OneNoteSectionName": "Code", "ThinkeryTags": ["html", "css", "javascript", "regex", "tdd", "code", "widgets"] },
+      { "OneNoteSectionName": "Devices & ROMs", "ThinkeryTags": ["android", "nook_color", "rom", "phone", "root", "router"] }
+    ]
+  },
+  {
+    "OneNoteSectionGroupName": "Automotive",
+    "OneNoteSections": [
+      { "OneNoteSectionName": "Maintenance", "ThinkeryTags": ["maintenance", "maintenance_log"] }
+    ]
+  },
+  {
+    "OneNoteSectionGroupName": "Misc Notes",
+    "OneNoteSections": [
+      { "OneNoteSectionName": "Tasks", "ThinkeryTags": ["task", "todo", "type_checklist"] },
+      { "OneNoteSectionName": "Career", "ThinkeryTags": ["career"] },
+      {
+        "OneNoteSectionName": "Inbox",
+        "ThinkeryTags": [
+          "misc_notes_folder", "from_tiriansdoor", "type_note", "type_bookmark",
+          "#configurations", "+", "2015", "2016", "2017", "2021", "2023",
+          "trivia", "recommendations", "notes"
+        ]
+      }
+    ]
+  },
+  {
+    "OneNoteSectionGroupName": "Reading and literature",
+    "OneNoteSections": [
+      { "OneNoteSectionName": "Books", "ThinkeryTags": ["books", "reading", "series", "louis_l'amour"] },
+      { "OneNoteSectionName": "Quotes", "ThinkeryTags": ["quotes"] }
+    ]
+  },
+  {
+    "OneNoteSectionGroupName": "Blog - Writing Ideas",
+    "OneNoteSections": [
+      { "OneNoteSectionName": "CMS Ideas", "ThinkeryTags": ["cms_ideas", "blog_ideas", "kentico"] },
+      { "OneNoteSectionName": "App Ideas", "ThinkeryTags": ["app_ideas", "app_idea"] },
+      { "OneNoteSectionName": "Other Drafts", "ThinkeryTags": ["blog_ideas"] }
+    ]
+  }
+]

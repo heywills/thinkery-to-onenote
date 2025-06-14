@@ -1,0 +1,28 @@
+[
+  {
+    "OneNoteSectionGroupName": "Section group 1",
+    "OneNoteSections": [
+      {
+        "OneNoteSectionName": "Section 1a",
+        "ThinkeryTags": ["legacy-tag-1", "legacy-tag-2", "legacy-tag-3"]  
+      },
+      {
+        "OneNoteSectionName": "Section 1b",
+        "ThinkeryTags": ["legacy-tag-4", "legacy-tag-5"]  
+      }
+    ]
+  },
+  {
+    "OneNoteSectionGroupName": "Section group 2",
+    "OneNoteSections": [
+      {
+        "OneNoteSectionName": "Section 2a",
+        "ThinkeryTags": ["legacy-tag-6", "legacy-tag-7"]  
+      },
+      {
+        "OneNoteSectionName": "Section 2b",
+        "ThinkeryTags": ["legacy-tag-8", "legacy-tag-9"]  
+      }
+    ]
+  }
+]

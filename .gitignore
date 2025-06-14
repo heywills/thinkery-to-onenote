@@ -1,0 +1,29 @@
+# Ignore import-files directory
+/import-files/
+
+# Ignore .vscode directory
+/.vscode/
+
+# PowerShell specific ignores
+*.pssproj
+*.ps1.user
+*.ps1.bak
+*.psm1.bak
+*.psd1.bak
+
+# Logs
+*.log
+logs/
+
+# OS specific files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temp files
+*~
+*.tmp
+*.temp
+
+# JSON backups
+*.json.bak
